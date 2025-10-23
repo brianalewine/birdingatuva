@@ -124,15 +124,18 @@
   }
 }
 
-/* Updated crossfade animation for 10-second intervals with 1-second fade */
+/* Fixed crossfade animation for smooth fade-in and fade-out transitions */
 @keyframes crossfade {
   0% {
-    opacity: 1;
+    opacity: 0;
   }
-  15% {
+  8.33% {
     opacity: 1;
   }
   16.67% {
+    opacity: 1;
+  }
+  25% {
     opacity: 0;
   }
   100% {

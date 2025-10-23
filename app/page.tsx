@@ -8,7 +8,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Calendar, Mail, Instagram, Facebook, Clock, ExternalLink, Compass } from "lucide-react"
 
+const HERO_IMAGES = [
+  "hero-2.jpg",
+  "hero-3.jpg",
+  "hero-4.jpg",
+  "hero-5.jpg",
+  "hero-6.jpg",
+  "image.png",
+  "image copy.png",
+]
+
 export default function HomePage() {
+  const heroImages = HERO_IMAGES
+  const imageCount = heroImages.length
+  const intervalSeconds = 10
+  const totalCycleDuration = imageCount * intervalSeconds
+
   const trips = [
     {
       name: "Ivy Creek Natural Area",
@@ -58,69 +73,27 @@ export default function HomePage() {
       <Navigation />
 
       <main className="relative z-10">
-        <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0">
-            <div
-              className="absolute inset-0 opacity-100"
-              style={{
-                animation: "crossfade 60s infinite",
-                animationDelay: "0s",
-              }}
-            >
-              <Image
-                src="/images/hero-backgrounds/hero-1.jpg"
-                alt=""
-                fill
-                className="object-cover"
-                priority
-                quality={95}
-              />
-            </div>
-            <div
-              className="absolute inset-0 opacity-0"
-              style={{
-                animation: "crossfade 60s infinite",
-                animationDelay: "10s",
-              }}
-            >
-              <Image src="/images/hero-backgrounds/hero-2.jpg" alt="" fill className="object-cover" quality={95} />
-            </div>
-            <div
-              className="absolute inset-0 opacity-0"
-              style={{
-                animation: "crossfade 60s infinite",
-                animationDelay: "20s",
-              }}
-            >
-              <Image src="/images/hero-backgrounds/hero-3.jpg" alt="" fill className="object-cover" quality={95} />
-            </div>
-            <div
-              className="absolute inset-0 opacity-0"
-              style={{
-                animation: "crossfade 60s infinite",
-                animationDelay: "30s",
-              }}
-            >
-              <Image src="/images/hero-backgrounds/hero-4.jpg" alt="" fill className="object-cover" quality={95} />
-            </div>
-            <div
-              className="absolute inset-0 opacity-0"
-              style={{
-                animation: "crossfade 60s infinite",
-                animationDelay: "40s",
-              }}
-            >
-              <Image src="/images/hero-backgrounds/hero-5.jpg" alt="" fill className="object-cover" quality={95} />
-            </div>
-            <div
-              className="absolute inset-0 opacity-0"
-              style={{
-                animation: "crossfade 60s infinite",
-                animationDelay: "50s",
-              }}
-            >
-              <Image src="/images/hero-backgrounds/hero-6.jpg" alt="" fill className="object-cover" quality={95} />
-            </div>
+            {heroImages.map((imageName, index) => (
+              <div
+                key={imageName}
+                className="absolute inset-0 opacity-0"
+                style={{
+                  animation: `crossfade ${totalCycleDuration}s infinite`,
+                  animationDelay: `${index * intervalSeconds}s`,
+                }}
+              >
+                <Image
+                  src={`/images/hero-backgrounds/${imageName}`}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                  quality={95}
+                />
+              </div>
+            ))}
           </div>
 
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75" />
