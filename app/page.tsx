@@ -58,34 +58,93 @@ export default function HomePage() {
       <Navigation />
 
       <main className="relative z-10">
-        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-          {/* Animated gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-accent animate-gradient-shift" />
-
-          {/* Floating particles effect */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-float" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float-delayed" />
-            <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-white/5 rounded-full blur-2xl animate-float-slow" />
+        <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0">
+            <div
+              className="absolute inset-0 opacity-100"
+              style={{
+                animation: "crossfade 60s infinite",
+                animationDelay: "0s",
+              }}
+            >
+              <Image
+                src="/images/hero-backgrounds/hero-1.jpg"
+                alt=""
+                fill
+                className="object-cover"
+                priority
+                quality={95}
+              />
+            </div>
+            <div
+              className="absolute inset-0 opacity-0"
+              style={{
+                animation: "crossfade 60s infinite",
+                animationDelay: "10s",
+              }}
+            >
+              <Image src="/images/hero-backgrounds/hero-2.jpg" alt="" fill className="object-cover" quality={95} />
+            </div>
+            <div
+              className="absolute inset-0 opacity-0"
+              style={{
+                animation: "crossfade 60s infinite",
+                animationDelay: "20s",
+              }}
+            >
+              <Image src="/images/hero-backgrounds/hero-3.jpg" alt="" fill className="object-cover" quality={95} />
+            </div>
+            <div
+              className="absolute inset-0 opacity-0"
+              style={{
+                animation: "crossfade 60s infinite",
+                animationDelay: "30s",
+              }}
+            >
+              <Image src="/images/hero-backgrounds/hero-4.jpg" alt="" fill className="object-cover" quality={95} />
+            </div>
+            <div
+              className="absolute inset-0 opacity-0"
+              style={{
+                animation: "crossfade 60s infinite",
+                animationDelay: "40s",
+              }}
+            >
+              <Image src="/images/hero-backgrounds/hero-5.jpg" alt="" fill className="object-cover" quality={95} />
+            </div>
+            <div
+              className="absolute inset-0 opacity-0"
+              style={{
+                animation: "crossfade 60s infinite",
+                animationDelay: "50s",
+              }}
+            >
+              <Image src="/images/hero-backgrounds/hero-6.jpg" alt="" fill className="object-cover" quality={95} />
+            </div>
           </div>
 
-          {/* Logo with animation */}
-          <div className="absolute top-20 left-1/2 -translate-x-1/2 w-32 h-32 md:w-40 md:h-40 animate-fade-in-down">
-            <Image
-              src="/images/final-logo.png"
-              alt="UVA Bird Club Logo"
-              fill
-              className="object-contain drop-shadow-2xl"
-              priority
-            />
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75" />
 
           <div className="relative z-10 text-center px-4 max-w-5xl mx-auto animate-fade-in-up">
-            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-6 tracking-tight drop-shadow-lg">
+            <div className="mb-8 flex justify-center">
+              <div className="relative w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl">
+                <Image
+                  src="/images/new-logo.png"
+                  alt="UVA Bird Club Logo"
+                  fill
+                  className="object-contain filter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                  priority
+                />
+              </div>
+            </div>
+
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-6 tracking-tight [text-shadow:_0_4px_20px_rgb(0_0_0_/_90%),_0_2px_8px_rgb(0_0_0_/_80%)]">
               HOO'S WATCHING HOOS
             </h1>
-            <p className="text-2xl md:text-3xl text-white/95 mb-4 font-light tracking-wide">Birding Club @ UVA</p>
-            <p className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-2xl md:text-3xl text-white mb-4 font-light tracking-wide [text-shadow:_0_3px_12px_rgb(0_0_0_/_80%),_0_1px_4px_rgb(0_0_0_/_70%)]">
+              Birding Club @ UVA
+            </p>
+            <p className="text-lg md:text-xl text-white/95 mb-12 max-w-2xl mx-auto leading-relaxed [text-shadow:_0_3px_12px_rgb(0_0_0_/_80%),_0_1px_4px_rgb(0_0_0_/_70%)]">
               Join us in exploring the diverse birdlife of Central Virginia through education, conservation, and
               community
             </p>
@@ -93,7 +152,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="secondary"
-                className="text-lg px-8 py-6 shadow-xl hover:scale-105 transition-transform"
+                className="text-lg px-8 py-6 shadow-2xl hover:scale-105 transition-transform"
                 asChild
               >
                 <Link href="#join">Join the Club</Link>
@@ -101,18 +160,11 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-white/10 text-white border-2 border-white hover:bg-white hover:text-primary text-lg px-8 py-6 shadow-xl hover:scale-105 transition-transform backdrop-blur-sm"
+                className="bg-white/10 text-white border-2 border-white hover:bg-white hover:text-primary text-lg px-8 py-6 shadow-2xl hover:scale-105 transition-transform backdrop-blur-sm"
                 asChild
               >
                 <Link href="#trips">Explore Trips</Link>
               </Button>
-            </div>
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-              <div className="w-1.5 h-3 bg-white/50 rounded-full animate-scroll-indicator" />
             </div>
           </div>
         </section>
@@ -159,10 +211,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* eBird Section */}
         <section className="py-20 px-4 bg-muted">
           <div className="container mx-auto max-w-4xl text-center">
-            <div className="text-6xl mb-6">🦅</div>
+            <div className="flex justify-center mb-6">
+              <Image src="/images/ebird-logo.png" alt="eBird Logo" width={200} height={80} className="object-contain" />
+            </div>
             <h2 className="font-display text-5xl md:text-6xl font-bold mb-6 text-primary">OUR eBIRD ACCOUNT</h2>
             <Card className="shadow-xl">
               <CardContent className="pt-6">

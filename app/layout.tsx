@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Bebas_Neue, Inter } from "next/font/google"
+import { Bebas_Neue, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 
 const bebasNeue = Bebas_Neue({
@@ -13,6 +13,12 @@ const bebasNeue = Bebas_Neue({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+})
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
   display: "swap",
 })
 
@@ -29,9 +35,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${bebasNeue.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${bebasNeue.variable} ${playfair.variable} font-sans antialiased`}>
         {children}
-        {/* Analytics component removed */}
       </body>
     </html>
   )

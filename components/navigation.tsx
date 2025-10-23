@@ -24,13 +24,15 @@ export function Navigation() {
           {/* Logo and Name */}
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/final-logo.PNG-v89VdMWdX1CgO6otNfBkTzAJQn31rI.png"
+              src="/images/new-logo.png"
               alt="UVA Bird Club Logo"
               width={50}
               height={50}
               className="rounded-full"
             />
-            <span className="font-serif text-lg md:text-xl font-semibold hidden sm:block">{"Hoo's Watching Hoos"}</span>
+            <span className="font-sans text-lg md:text-xl font-semibold tracking-wide hidden sm:block">
+              {"Hoo's Watching Hoos"}
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
