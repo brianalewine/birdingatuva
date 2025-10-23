@@ -17,7 +17,7 @@ const trips = [
     description: "Varied habitats perfect for spotting warblers, woodpeckers, and waterfowl throughout the seasons.",
     frequency: "Monthly",
     location: "215-acre preserve",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/local-trips/ivy-creek.png",
     allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/ivy-creek-natural-area-loop",
     difficulty: "Easy",
     distance: "2.5 mi",
@@ -27,7 +27,7 @@ const trips = [
     description: "Experience thrushes, vireos, and raptors soaring over the Blue Ridge Mountains.",
     frequency: "Seasonal",
     location: "High-elevation birding",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/local-trips/shenandoah.png",
     allTrailsUrl: "https://www.alltrails.com/parks/us/virginia/shenandoah-national-park",
     difficulty: "Moderate",
     distance: "Various",
@@ -37,7 +37,7 @@ const trips = [
     description: "Walk along the river to spot herons, kingfishers, and a variety of songbirds.",
     frequency: "Weekly",
     location: "River corridor",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/local-trips/rivanna.png",
     allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/rivanna-trail",
     difficulty: "Easy",
     distance: "20 mi",
@@ -47,7 +47,7 @@ const trips = [
     description: "Beginner-friendly outings to observe migrants right on campus. Perfect for busy students!",
     frequency: "Bi-weekly",
     location: "Campus birding",
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/images/local-trips/ohill.png",
     allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/observatory-hill-loop",
     difficulty: "Easy",
     distance: "1.2 mi",
@@ -82,7 +82,7 @@ export default function HomePage() {
             <div className="mb-8 flex justify-center">
               <div className="relative w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl">
                 <Image
-                  src="/images/new-logo.png"
+                  src="/images/club-logo.png"
                   alt="UVA Bird Club Logo"
                   fill
                   className="object-contain filter drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
@@ -127,7 +127,7 @@ export default function HomePage() {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image src="/images/creek.png" alt="Wildlife at creek" fill className="object-cover" />
+                <Image src="/images/about-us.png" alt="Wildlife at creek" fill className="object-cover" />
               </div>
 
               <div>
@@ -208,7 +208,6 @@ export default function HomePage() {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">{trip.frequency}</Badge>
                   </div>
                   <CardHeader>
@@ -245,7 +244,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="join" className="py-20 px-4 bg-gradient-to-b from-muted to-background">
+        <section id="join" className="py-20 px-4 bg-gradient-to-b from-muted to-background scroll-mt-24">
           <div className="container mx-auto max-w-6xl">
             <h2 className="font-display text-5xl md:text-6xl font-bold mb-4 text-center text-primary">HOW TO JOIN</h2>
             <p className="text-center text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">

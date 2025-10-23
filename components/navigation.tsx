@@ -24,7 +24,7 @@ export function Navigation() {
           {/* Logo and Name */}
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <Image
-              src="/images/new-logo.png"
+              src="/images/club-logo.png"
               alt="UVA Bird Club Logo"
               width={50}
               height={50}
