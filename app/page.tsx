@@ -3,70 +3,69 @@ import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DecorativeBirds } from "@/components/decorative-birds"
+import { HeroSlideshow } from "@/components/hero-slideshow"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Calendar, Mail, Instagram, Facebook, Clock, ExternalLink, Compass } from "lucide-react"
+import fs from "fs"
+import path from "path"
 
-const HERO_IMAGES = [
-  "hero-2.jpg",
-  "hero-3.jpg",
-  "hero-4.jpg",
-  "hero-5.jpg",
-  "hero-6.jpg",
-  "image.png",
-  "image copy.png",
+const trips = [
+  {
+    name: "Ivy Creek Natural Area",
+    description: "Varied habitats perfect for spotting warblers, woodpeckers, and waterfowl throughout the seasons.",
+    frequency: "Monthly",
+    location: "215-acre preserve",
+    image: "/placeholder.svg?height=300&width=500",
+    allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/ivy-creek-natural-area-loop",
+    difficulty: "Easy",
+    distance: "2.5 mi",
+  },
+  {
+    name: "Shenandoah National Park",
+    description: "Experience thrushes, vireos, and raptors soaring over the Blue Ridge Mountains.",
+    frequency: "Seasonal",
+    location: "High-elevation birding",
+    image: "/placeholder.svg?height=300&width=500",
+    allTrailsUrl: "https://www.alltrails.com/parks/us/virginia/shenandoah-national-park",
+    difficulty: "Moderate",
+    distance: "Various",
+  },
+  {
+    name: "Rivanna River Trail",
+    description: "Walk along the river to spot herons, kingfishers, and a variety of songbirds.",
+    frequency: "Weekly",
+    location: "River corridor",
+    image: "/placeholder.svg?height=300&width=500",
+    allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/rivanna-trail",
+    difficulty: "Easy",
+    distance: "20 mi",
+  },
+  {
+    name: "UVA Grounds & Observatory Hill",
+    description: "Beginner-friendly outings to observe migrants right on campus. Perfect for busy students!",
+    frequency: "Bi-weekly",
+    location: "Campus birding",
+    image: "/placeholder.svg?height=300&width=500",
+    allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/observatory-hill-loop",
+    difficulty: "Easy",
+    distance: "1.2 mi",
+  },
 ]
 
 export default function HomePage() {
-  const heroImages = HERO_IMAGES
-  const imageCount = heroImages.length
-  const intervalSeconds = 10
-  const totalCycleDuration = imageCount * intervalSeconds
-  const fadePercentage = (1 / intervalSeconds) * 100 // 1 second fade = 10% of 10-second interval
-
-  const trips = [
-    {
-      name: "Ivy Creek Natural Area",
-      description: "Varied habitats perfect for spotting warblers, woodpeckers, and waterfowl throughout the seasons.",
-      frequency: "Monthly",
-      location: "215-acre preserve",
-      image: "/placeholder.svg?height=300&width=500",
-      allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/ivy-creek-natural-area-loop",
-      difficulty: "Easy",
-      distance: "2.5 mi",
-    },
-    {
-      name: "Shenandoah National Park",
-      description: "Experience thrushes, vireos, and raptors soaring over the Blue Ridge Mountains.",
-      frequency: "Seasonal",
-      location: "High-elevation birding",
-      image: "/placeholder.svg?height=300&width=500",
-      allTrailsUrl: "https://www.alltrails.com/parks/us/virginia/shenandoah-national-park",
-      difficulty: "Moderate",
-      distance: "Various",
-    },
-    {
-      name: "Rivanna River Trail",
-      description: "Walk along the river to spot herons, kingfishers, and a variety of songbirds.",
-      frequency: "Weekly",
-      location: "River corridor",
-      image: "/placeholder.svg?height=300&width=500",
-      allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/rivanna-trail",
-      difficulty: "Easy",
-      distance: "20 mi",
-    },
-    {
-      name: "UVA Grounds & Observatory Hill",
-      description: "Beginner-friendly outings to observe migrants right on campus. Perfect for busy students!",
-      frequency: "Bi-weekly",
-      location: "Campus birding",
-      image: "/placeholder.svg?height=300&width=500",
-      allTrailsUrl: "https://www.alltrails.com/trail/us/virginia/observatory-hill-loop",
-      difficulty: "Easy",
-      distance: "1.2 mi",
-    },
-  ]
+  const heroImagesDir = path.join(process.cwd(), "public/images/hero-backgrounds");
+  const heroImages = fs.readdirSync(heroImagesDir).filter((file) => {
+    const ext = path.extname(file).toLowerCase();
+    const filePath = path.join(heroImagesDir, file);
+    const isFile = fs.statSync(filePath).isFile();
+    return (
+      isFile &&
+      [".jpg", ".jpeg", ".png", ".webp"].includes(ext) &&
+      !file.startsWith(".")
+    );
+  });
 
   return (
     <div className="min-h-screen relative">
@@ -75,28 +74,7 @@ export default function HomePage() {
 
       <main className="relative z-10">
         <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0">
-            {heroImages.map((imageName, index) => (
-              <div
-                key={imageName}
-                className="absolute inset-0"
-                style={{
-                  animation: `crossfade ${totalCycleDuration}s infinite`,
-                  animationDelay: `${index * intervalSeconds}s`,
-                  opacity: 0,
-                }}
-              >
-                <Image
-                  src={`/images/hero-backgrounds/${imageName}`}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  priority={index === 0}
-                  quality={95}
-                />
-              </div>
-            ))}
-          </div>
+          <HeroSlideshow images={heroImages} />
 
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75" />
 
