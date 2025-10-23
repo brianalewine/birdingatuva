@@ -23,6 +23,7 @@ export default function HomePage() {
   const imageCount = heroImages.length
   const intervalSeconds = 10
   const totalCycleDuration = imageCount * intervalSeconds
+  const fadePercentage = (1 / intervalSeconds) * 100 // 1 second fade = 10% of 10-second interval
 
   const trips = [
     {
@@ -78,10 +79,11 @@ export default function HomePage() {
             {heroImages.map((imageName, index) => (
               <div
                 key={imageName}
-                className="absolute inset-0 opacity-0"
+                className="absolute inset-0"
                 style={{
                   animation: `crossfade ${totalCycleDuration}s infinite`,
                   animationDelay: `${index * intervalSeconds}s`,
+                  opacity: 0,
                 }}
               >
                 <Image

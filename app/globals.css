@@ -124,18 +124,18 @@
   }
 }
 
-/* Fixed crossfade animation for smooth fade-in and fade-out transitions */
+/* Updated crossfade animation to prevent white background flash and work with any number of images */
 @keyframes crossfade {
   0% {
     opacity: 0;
   }
-  8.33% {
+  2% {
     opacity: 1;
   }
-  16.67% {
+  18% {
     opacity: 1;
   }
-  25% {
+  20% {
     opacity: 0;
   }
   100% {
