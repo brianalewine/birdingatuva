@@ -264,7 +264,7 @@ export default function HomePage() {
                       </div>
                       <div className="absolute -inset-2 rounded-full bg-accent/20 -z-10 animate-pulse" />
                     </div>
-                    <CardTitle className="font-display text-3xl">JOIN GROUPME</CardTitle>
+                    <CardTitle className="font-display text-3xl">JOIN OUR GROUPME</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -343,7 +343,7 @@ export default function HomePage() {
                     </div>
                     <div className="flex items-start gap-3">
                       <Calendar className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
-                      <p>Trip announcements at meetings with food provided</p>
+                      <p>Meetings with trip announcements and food provided</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <MapPin className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
