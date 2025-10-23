@@ -142,27 +142,27 @@ export default function HomePage() {
                   conservation, and community engagement.
                 </p>
 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-accent mt-2" />
-                    <p className="text-foreground">Promoting bird conservation and environmental stewardship</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-accent mt-2" />
-                    <p className="text-foreground">Providing birding education and field experience opportunities</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-accent mt-2" />
-                    <p className="text-foreground">Building a community of bird enthusiasts</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-accent mt-2" />
-                    <p className="text-foreground">Organizing birding trips and educational events</p>
-                  </div>
-                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#36834C' }} />
+                    <p className="text-base text-muted-foreground leading-relaxed">Promoting bird conservation and environmental stewardship</p>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#36834C' }} />
+                    <p className="text-base text-muted-foreground leading-relaxed">Providing birding education and field experience opportunities</p>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#36834C' }} />
+                    <p className="text-base text-muted-foreground leading-relaxed">Building a community of bird enthusiasts</p>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#36834C' }} />
+                    <p className="text-base text-muted-foreground leading-relaxed">Organizing birding trips and educational events</p>
+                  </li>
+                </ul>
 
-                <p className="mt-6 text-lg font-semibold text-accent">
-                  All experience levels welcome—from beginners to experienced birders!
+                <p className="mt-8 text-lg font-semibold" style={{ color: '#36834C' }}>
+                  All experience levels welcome, from beginners to experienced birders!
                 </p>
               </div>
             </div>
