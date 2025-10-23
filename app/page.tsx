@@ -334,36 +334,40 @@ export default function HomePage() {
                 <CardTitle className="font-display text-4xl text-center">CLUB ACTIVITIES & DUES</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <h3 className="font-display text-xl mb-4 text-accent">What We Offer</h3>
+                <div className="grid md:grid-cols-2 gap-12">
+                  <div className="space-y-5">
+                    <h3 className="font-display text-2xl mb-6 text-accent">What We Offer</h3>
                     <div className="flex items-start gap-3">
                       <Calendar className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
-                      <p>Biweekly education seminars on bird ID and sustainable practices</p>
+                      <p className="text-foreground">Biweekly education seminars on bird ID and sustainable practices</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <Calendar className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
-                      <p>Meetings with trip announcements and food provided</p>
+                      <p className="text-foreground">Meetings with trip announcements and food provided</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <MapPin className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
-                      <p>Local trips in the Charlottesville area</p>
+                      <p className="text-foreground">Local trips in the Charlottesville area</p>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <h3 className="font-display text-xl mb-4 text-accent">Membership</h3>
-                    <div className="flex items-start gap-3">
-                      <div className="text-3xl flex-shrink-0">💵</div>
-                      <div>
-                        <p className="font-bold text-2xl text-accent">$7 per semester</p>
-                        <p className="text-sm text-muted-foreground">Covers local trips and club activities</p>
+                  <div className="space-y-5">
+                    <h3 className="font-display text-2xl mb-6 text-accent">Membership</h3>
+                    <div className="bg-background/70 p-8 rounded-xl border-2 border-accent/30 shadow-lg">
+                      <div className="text-center mb-6 pb-6 border-b border-accent/20">
+                        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3 font-semibold">Semester Dues</p>
+                        <p className="font-display font-bold text-5xl text-accent">$7</p>
                       </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="text-3xl flex-shrink-0">🚗</div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          Additional fees may apply for longer-distance trips to cover transportation
+                      <div className="space-y-3 text-sm">
+                        <div className="flex items-start gap-2">
+                          <span className="text-accent mt-0.5">✓</span>
+                          <p className="text-foreground">Access to all local trips and club activities</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-accent mt-0.5">✓</span>
+                          <p className="text-foreground">Educational seminars and meetings with food</p>
+                        </div>
+                        <p className="pt-4 text-xs text-muted-foreground italic">
+                          *Additional fees may apply for longer-distance trips to cover transportation costs
                         </p>
                       </div>
                     </div>
