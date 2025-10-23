@@ -7,7 +7,7 @@ import { HeroSlideshow } from "@/components/hero-slideshow"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Calendar, Mail, Instagram, Facebook, Clock, ExternalLink, Compass } from "lucide-react"
+import { MapPin, Calendar, Mail, Instagram, Clock, ExternalLink, Compass } from "lucide-react"
 import fs from "fs"
 import path from "path"
 
@@ -398,13 +398,10 @@ export default function HomePage() {
 
               <Card className="text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
-                  <div className="flex justify-center gap-3 mb-4">
-                    <Instagram className="w-12 h-12 text-accent" />
-                    <Facebook className="w-12 h-12 text-accent" />
-                  </div>
-                  <CardTitle className="font-display text-xl">SOCIAL MEDIA</CardTitle>
+                  <Instagram className="w-12 h-12 mx-auto mb-4 text-accent" />
+                  <CardTitle className="font-display text-xl">INSTAGRAM</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent>
                   <a
                     href="https://instagram.com/uvabirdclub"
                     target="_blank"
@@ -412,14 +409,6 @@ export default function HomePage() {
                     className="block text-accent hover:underline"
                   >
                     @uvabirdclub
-                  </a>
-                  <a
-                    href="https://facebook.com/uvabirdclub"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-accent hover:underline"
-                  >
-                    UVA Bird Club
                   </a>
                 </CardContent>
               </Card>
