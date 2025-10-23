@@ -126,8 +126,13 @@ export default function HomePage() {
         <section className="py-20 px-4">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image src="/images/about-us.png" alt="Wildlife at creek" fill className="object-cover" />
+              <div className="space-y-3">
+                <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+                  <Image src="/images/about-us.jpeg" alt="Club members during bird banding activity" fill className="object-cover" />
+                </div>
+                <p className="text-sm text-center text-muted-foreground italic">
+                  Club members after capturing birds in a mist net for banding and release
+                </p>
               </div>
 
               <div>
