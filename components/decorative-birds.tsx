@@ -140,9 +140,10 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     usedBirdsRef.current.add(randomBird)
     if (usedBirdsRef.current.size >= birdImageList.length) usedBirdsRef.current.clear()
 
-  const duration = Math.random() * 5 + 8
+    // Fixed duration for consistent flight speed across all birds
+    const duration = 10.5
     
-    // build a random bezier arc path from one edge to the other
+    // build a random bezier arc path with start/end points on any edge of the screen
     const w = typeof window !== "undefined" ? window.innerWidth : 1200
     const h = typeof window !== "undefined" ? window.innerHeight : 800
     const pageHeight = typeof document !== "undefined" ? document.documentElement.scrollHeight : 3000
@@ -158,17 +159,50 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     const minY = Math.max(100, viewportTop - bufferAbove)
     const maxY = Math.min(pageHeight - 200, viewportBottom + bufferBelow)
     
-    const startX = direction === "right" ? -120 : w + 120
-    const endX = direction === "right" ? w + 120 : -120
-    // startY and endY are absolute positions on the page (not viewport-relative)
-    const startY = minY + Math.random() * (maxY - minY)
-    const endY = minY + Math.random() * (maxY - minY)
+    // Randomly choose start and end edges (0=left, 1=right, 2=top, 3=bottom)
+    const startEdge = Math.floor(Math.random() * 4)
+    const endEdge = Math.floor(Math.random() * 4)
     
-    // control point near the middle with random offset to create gentle arc
+    let startX: number, startY: number, endX: number, endY: number
+    
+    // Start position
+    if (startEdge === 0) { // left
+      startX = -120
+      startY = minY + Math.random() * (maxY - minY)
+    } else if (startEdge === 1) { // right
+      startX = w + 120
+      startY = minY + Math.random() * (maxY - minY)
+    } else if (startEdge === 2) { // top
+      startX = Math.random() * w
+      startY = minY
+    } else { // bottom
+      startX = Math.random() * w
+      startY = maxY
+    }
+    
+    // End position
+    if (endEdge === 0) { // left
+      endX = -120
+      endY = minY + Math.random() * (maxY - minY)
+    } else if (endEdge === 1) { // right
+      endX = w + 120
+      endY = minY + Math.random() * (maxY - minY)
+    } else if (endEdge === 2) { // top
+      endX = Math.random() * w
+      endY = minY
+    } else { // bottom
+      endX = Math.random() * w
+      endY = maxY
+    }
+    
+    // Determine direction based on horizontal movement
+    const actualDirection = endX > startX ? "right" : "left"
+    
+    // Control point with larger random offset to create more dramatic arcs
     const midX = (startX + endX) / 2
     const midY = (startY + endY) / 2
-    const cpX = midX + (Math.random() - 0.5) * w * 0.25
-    const cpY = midY + (Math.random() - 0.5) * h * 0.3
+    const cpX = midX + (Math.random() - 0.5) * w * 0.6
+    const cpY = midY + (Math.random() - 0.5) * h * 0.6
     
     // Random flight angle (not used directly anymore since arc determines direction)
     const flightAngle = 0
@@ -176,7 +210,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     const newBird: FlyingBird = {
       id: birdCounterRef.current++,
       bird: randomBird,
-      direction,
+      direction: actualDirection,
       top: 0,
       speed: duration,
       isVisible: false,
@@ -246,12 +280,13 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           // effective velocity scales with birdSpeed; when we've slowed to MIN and not scrolling, pause fully
           const effectiveV = !isScrolling && birdSpeed <= MIN_SPEED_FACTOR + 0.001 ? 0 : baseV * birdSpeed
           const added = effectiveV * delta
-          const newProgress = Math.min(1, (b.progress ?? 0) + added)
+          const newProgress = Math.min(1.15, (b.progress ?? 0) + added)
           return { ...b, progress: newProgress }
         })
 
-        // Remove birds that completed their progress
-        return updated.filter((b) => (b.progress ?? 0) < 1)
+        // Remove birds after they've completed their progress AND faded out
+        // Allow progress up to 1.15 to give time for fade-out animation
+        return updated.filter((b) => (b.progress ?? 0) < 1.15)
       })
 
       rafRef.current = requestAnimationFrame(loop)
@@ -293,23 +328,19 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           const x = ((1 - p) * (1 - p) * (bird.startX ?? -120)) + (2 * (1 - p) * p * (bird.cpX ?? (w / 2))) + (p * p * (bird.endX ?? (w + 120)))
           const y = ((1 - p) * (1 - p) * (bird.startY ?? 200)) + (2 * (1 - p) * p * (bird.cpY ?? 300)) + (p * p * (bird.endY ?? 200))
 
-          // Edge fade calculation
-          const FADE_PX_LEFT = Math.max(80, Math.floor(w * 0.05)) * 1.5
-          const FADE_PX_RIGHT = Math.max(150, Math.floor(w * 0.12)) * 2
-          const birdLeft = x
-          const birdRight = x + BIRD_PIXEL_SIZE
-          const distToLeft = birdRight
-          const distToRight = w - birdLeft
-          let edgeOpacity = 1
-          if (p < 0.15) {
-            const fadeDistance = bird.direction === "right" ? FADE_PX_LEFT : FADE_PX_RIGHT
-            edgeOpacity = Math.min(1, Math.min(distToLeft, distToRight) / fadeDistance)
-          } else if (p > 0.85) {
-            const fadeDistance = bird.direction === "right" ? FADE_PX_RIGHT : FADE_PX_LEFT
-            edgeOpacity = Math.min(1, Math.min(distToLeft, distToRight) / fadeDistance)
-          }
-
-          const opacityTransition = p > 0.85 ? "opacity 200ms ease" : "opacity 700ms ease"
+          // Edge fade calculation - fade based on distance to viewport edges
+          // Birds start/end at -120 or w+120, so fade within the viewport area
+          const FADE_DISTANCE_LEFT = 150 // Shorter fade on left for quicker appearance
+          const FADE_DISTANCE_RIGHT = 200 // Longer fade on right for smoother exit
+          
+          // Fade starts when bird enters viewport (x=0) and completes at FADE_DISTANCE
+          const leftFade = x < 0 ? 0 : (x < FADE_DISTANCE_LEFT ? x / FADE_DISTANCE_LEFT : 1)
+          
+          // Fade starts when bird is FADE_DISTANCE from right edge
+          const rightFade = x > w ? 0 : (x > w - FADE_DISTANCE_RIGHT ? (w - x) / FADE_DISTANCE_RIGHT : 1)
+          
+          // Use the minimum fade (most restrictive)
+          const edgeOpacity = Math.min(leftFade, rightFade)
 
           // Compute derivative of Bezier for instantaneous direction (for rotation)
           const startX = bird.startX ?? -120
@@ -323,11 +354,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           const dx = 2 * (1 - p) * (cpX - startX) + 2 * p * (endX - cpX)
           const dy = 2 * (1 - p) * (cpY - startY) + 2 * p * (endY - cpY)
 
-          let rotationDeg = Math.atan2(dy, dx) * (180 / Math.PI)
-          // clamp rotation to reasonable range
-          const MAX_ROT = 65
-          if (rotationDeg > MAX_ROT) rotationDeg = MAX_ROT
-          if (rotationDeg < -MAX_ROT) rotationDeg = -MAX_ROT
+          // Calculate rotation from the tangent direction
+          // All bird images face right (0°), so we rotate them to match their flight path
+          const rotationDeg = Math.atan2(dy, dx) * (180 / Math.PI)
 
           return (
             <div
@@ -338,9 +367,10 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
                 width: `${BIRD_PIXEL_SIZE}px`,
                 height: `${BIRD_PIXEL_SIZE}px`,
                 left: 0,
-                // translateX/translateY position along bezier arc and rotate to match instantaneous direction
-                transform: `translateX(${x}px) translateY(${y}px) rotate(${rotationDeg}deg)`,
-                transition: `${opacityTransition}, transform 150ms linear`,
+                // Position without rotation (rotation will be on the image)
+                transform: `translateX(${x}px) translateY(${y}px)`,
+                // Only transition transform, not opacity (opacity changes smoothly via RAF)
+                transition: `transform 150ms linear`,
                 // combine creation fade (isVisible) with edge fade
                 opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,
                 willChange: "transform, opacity",
@@ -354,7 +384,13 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
               className="object-contain"
               style={{
                 filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))",
-                transform: bird.direction === "left" ? "scaleX(-1)" : "none",
+                // All birds face right. For left-facing flight:
+                // 1. Flip horizontally with scaleX(-1)
+                // 2. Compensate rotation: flipping mirrors the angle across the vertical axis
+                //    So if flying at angle θ to the right, flipped bird needs 180° - θ
+                transform: bird.direction === "left" 
+                  ? `scaleX(-1) rotate(${180 - rotationDeg}deg)` 
+                  : `rotate(${rotationDeg}deg)`,
               }}
             />
             </div>
