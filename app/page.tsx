@@ -74,32 +74,29 @@ export default function HomePage() {
 		)
 	})
 
+	const flyingDir = path.join(process.cwd(), "public/images/flying-birds")
+	let birdImages: string[] = []
+	try {
+		birdImages = fs.readdirSync(flyingDir).filter((file) => {
+			const ext = path.extname(file).toLowerCase()
+			const filePath = path.join(flyingDir, file)
+			const isFile = fs.statSync(filePath).isFile()
+			return (
+				isFile &&
+				[".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(ext) &&
+				!file.startsWith(".")
+			)
+		})
+	} catch (e) {
+		birdImages = []
+	}
+
 	return (
 		<div className="min-h-screen relative">
-			{/* read flying-birds filenames from public folder and pass into client component */}
 			<Navigation />
 
 			<main className="relative z-20">
-				{(() => {
-					const flyingDir = path.join(process.cwd(), "public/images/flying-birds")
-					let flyingImages: string[] = []
-					try {
-						flyingImages = fs.readdirSync(flyingDir).filter((file) => {
-							const ext = path.extname(file).toLowerCase()
-							const filePath = path.join(flyingDir, file)
-							const isFile = fs.statSync(filePath).isFile()
-							return (
-								isFile &&
-								[".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(ext) &&
-								!file.startsWith(".")
-							)
-						})
-					} catch (e) {
-						flyingImages = []
-					}
-
-					return <DecorativeBirds images={flyingImages} />
-				})()}
+				<DecorativeBirds images={birdImages} />
 				<section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
 					<HeroSlideshow images={heroImages} />
 

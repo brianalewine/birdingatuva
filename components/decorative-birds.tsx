@@ -18,10 +18,18 @@ interface FlyingBird {
   scale?: number
   // flight angle in degrees
   angle?: number
+  // optional bezier path points
+  startX?: number
+  startY?: number
+  endX?: number
+  endY?: number
+  cpX?: number
+  cpY?: number
 }
 
-// Available bird images (fallback) — include file extensions so client-only renders work
-const BIRD_IMAGES = ["bird.png", "card.png", "fl.png", "rwb.png", "wb.png"]
+// NOTE: We do not fallback to built-in images here. If no images are provided,
+// the component will render no birds (per spec).
+const BIRD_IMAGES: string[] = []
 
 interface DecorativeBirdsProps {
   images?: string[]
@@ -43,8 +51,15 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const lastFrameRef = useRef<number | null>(null)
   const spawnIntervalRef = useRef<NodeJS.Timeout | null>(null)
   
-  // use provided images array or fallback
+  // use provided images array; if none provided, show no birds
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
+
+  // limit concurrent birds and keep spawn frequency independent of how many files exist
+  const MAX_CONCURRENT_BIRDS = 6
+  const SPAWN_RATE_MS = 800
+  // Render all bird images at a fixed pixel size so they appear uniform
+  // (increased by 20% per request)
+  const BIRD_PIXEL_SIZE = 66
 
   useEffect(() => {
     setMounted(true)
@@ -111,6 +126,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
 
   // helper to spawn a single bird
   const spawnOne = () => {
+    // don't spawn if there are no images
+    if (!birdImageList || birdImageList.length === 0) return
+
     const direction = Math.random() > 0.5 ? "left" : "right"
     let randomBird: string
     let attempts = 0
@@ -122,32 +140,64 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     usedBirdsRef.current.add(randomBird)
     if (usedBirdsRef.current.size >= birdImageList.length) usedBirdsRef.current.clear()
 
-    const duration = Math.random() * 5 + 8
+  const duration = Math.random() * 5 + 8
     
-    // Calculate spawn position from About section to before footer
-    // About section starts around 80vh (~800px), stop well before footer (leave 800px at bottom)
+    // build a random bezier arc path from one edge to the other
+    const w = typeof window !== "undefined" ? window.innerWidth : 1200
+    const h = typeof window !== "undefined" ? window.innerHeight : 800
     const pageHeight = typeof document !== "undefined" ? document.documentElement.scrollHeight : 3000
-    const aboutStart = typeof window !== "undefined" ? window.innerHeight * 0.8 : 800
-    const spawnRange = pageHeight - aboutStart - 800 // increased padding to avoid footer margin area
-    const topPosition = aboutStart + (Math.random() * Math.max(100, spawnRange))
     
-    // Random flight angle between -45 and +45 degrees
-    const flightAngle = (Math.random() * 90) - 45
+    // spawn birds across the full page height (with padding) based on current scroll position
+    const currentScroll = typeof window !== "undefined" ? window.scrollY : 0
+    const viewportTop = currentScroll
+    const viewportBottom = currentScroll + h
     
+    // Random y position within current viewport plus some buffer
+    const bufferAbove = h * 0.5
+    const bufferBelow = h * 0.5
+    const minY = Math.max(100, viewportTop - bufferAbove)
+    const maxY = Math.min(pageHeight - 200, viewportBottom + bufferBelow)
+    
+    const startX = direction === "right" ? -120 : w + 120
+    const endX = direction === "right" ? w + 120 : -120
+    // startY and endY are absolute positions on the page (not viewport-relative)
+    const startY = minY + Math.random() * (maxY - minY)
+    const endY = minY + Math.random() * (maxY - minY)
+    
+    // control point near the middle with random offset to create gentle arc
+    const midX = (startX + endX) / 2
+    const midY = (startY + endY) / 2
+    const cpX = midX + (Math.random() - 0.5) * w * 0.25
+    const cpY = midY + (Math.random() - 0.5) * h * 0.3
+    
+    // Random flight angle (not used directly anymore since arc determines direction)
+    const flightAngle = 0
+
     const newBird: FlyingBird = {
       id: birdCounterRef.current++,
       bird: randomBird,
       direction,
-      top: topPosition,
+      top: 0,
       speed: duration,
       isVisible: false,
       progress: 0,
       baseVelocity: 1 / (duration * 1000),
-      scale: 0.85 + Math.random() * 0.2,
+      // use a fixed scale placeholder (render size controlled via Image width/height)
+      scale: 1,
       angle: flightAngle,
+      startX,
+      startY,
+      endX,
+      endY,
+      cpX,
+      cpY,
     }
 
-    setFlyingBirds((prev) => [...prev, newBird])
+    // add the bird using functional update to avoid stale closures and enforce max concurrent birds
+    setFlyingBirds((prev) => {
+      if (prev.length >= MAX_CONCURRENT_BIRDS) return prev
+      return [...prev, newBird]
+    })
 
     setTimeout(() => {
       setFlyingBirds((prev) => prev.map((b) => (b.id === newBird.id ? { ...b, isVisible: true } : b)))
@@ -156,17 +206,20 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
 
   // spawner: spawn birds at regular intervals based on spawn rate only
   useEffect(() => {
-    // start spawner if scrolling or there are already birds
+    // start spawner when image list is available so birds show up without scrolling
     if (spawnIntervalRef.current) {
       clearInterval(spawnIntervalRef.current)
       spawnIntervalRef.current = null
     }
 
-    // Always spawn birds when scrolling or once birds have appeared
-    if (isScrolling || flyingBirds.length > 0) {
+    if (birdImageList.length > 0) {
+      // spawn a couple immediately so the page isn't empty
+      spawnOne()
+      setTimeout(spawnOne, 300)
+
       spawnIntervalRef.current = setInterval(() => {
         spawnOne()
-      }, 800) // spawn rate controls bird frequency
+      }, SPAWN_RATE_MS)
     }
 
     return () => {
@@ -175,8 +228,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         spawnIntervalRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isScrolling, flyingBirds.length])
+    // re-run only if the available images change
+  }, [birdImageList.length])
 
   // rAF loop to drive bird positions based on progress so changing speed doesn't cause jumps
   useEffect(() => {
@@ -185,7 +238,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
       const delta = t - (lastFrameRef.current || t)
       lastFrameRef.current = t
 
-      setFlyingBirds((prev) => {
+        setFlyingBirds((prev) => {
         if (prev.length === 0) return prev
         const w = typeof window !== "undefined" ? window.innerWidth : 1200
         const updated = prev.map((b) => {
@@ -234,51 +287,47 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         {flyingBirds.map((bird) => {
           // compute x position from progress so updates are continuous and won't jump
           const w = typeof window !== "undefined" ? window.innerWidth : 1200
-          const start = bird.direction === "right" ? -120 : w + 120
-          const distance = bird.direction === "right" ? w + 240 : -(w + 240)
-          const x = start + (bird.progress ?? 0) * distance
+          const p = bird.progress ?? 0
 
-          // compute edge fade with separate ranges for entering (fade-in) and exiting (fade-out)
-          // adjust fade distances for left and right edges separately
-          // left side shorter than right side
+          // Quadratic Bezier evaluation for position
+          const x = ((1 - p) * (1 - p) * (bird.startX ?? -120)) + (2 * (1 - p) * p * (bird.cpX ?? (w / 2))) + (p * p * (bird.endX ?? (w + 120)))
+          const y = ((1 - p) * (1 - p) * (bird.startY ?? 200)) + (2 * (1 - p) * p * (bird.cpY ?? 300)) + (p * p * (bird.endY ?? 200))
+
+          // Edge fade calculation
           const FADE_PX_LEFT = Math.max(80, Math.floor(w * 0.05)) * 1.5
           const FADE_PX_RIGHT = Math.max(150, Math.floor(w * 0.12)) * 2
           const birdLeft = x
-          const birdRight = x + 100
-          const p = bird.progress ?? 0
-          // distance to left and right edges in pixels
+          const birdRight = x + BIRD_PIXEL_SIZE
           const distToLeft = birdRight
           const distToRight = w - birdLeft
           let edgeOpacity = 1
-
           if (p < 0.15) {
-            // entering: use left fade distance for left edge, right for right edge
             const fadeDistance = bird.direction === "right" ? FADE_PX_LEFT : FADE_PX_RIGHT
             edgeOpacity = Math.min(1, Math.min(distToLeft, distToRight) / fadeDistance)
           } else if (p > 0.85) {
-            // exiting: use right fade distance for right edge, left for left edge
             const fadeDistance = bird.direction === "right" ? FADE_PX_RIGHT : FADE_PX_LEFT
             edgeOpacity = Math.min(1, Math.min(distToLeft, distToRight) / fadeDistance)
           }
 
-          const scale = (bird as any).scale ?? 0.95
           const opacityTransition = p > 0.85 ? "opacity 200ms ease" : "opacity 700ms ease"
 
-          // Get the flight angle for rotation and trajectory
-          const flightAngle = bird.angle ?? 0
-          
-          // Calculate trajectory based on angle
-          // Positive angle = upward flight, negative = downward
-          const angleInRadians = (flightAngle * Math.PI) / 180
-          const trajectoryY = -Math.tan(angleInRadians) * (bird.progress ?? 0) * (w + 240)
-          
-          // Add sinusoidal vertical motion on top of trajectory
-          // Use progress to create a wave that completes 2-3 cycles across the screen
-          const waveFrequency = 2.5 + Math.sin(bird.id) * 0.5 // slightly vary frequency per bird
-          const waveAmplitude = 30 + Math.cos(bird.id) * 10 // vary amplitude 20-40px per bird
-          const waveOffset = Math.sin(p * Math.PI * 2 * waveFrequency) * waveAmplitude
-          
-          const verticalOffset = trajectoryY + waveOffset
+          // Compute derivative of Bezier for instantaneous direction (for rotation)
+          const startX = bird.startX ?? -120
+          const startY = bird.startY ?? 200
+          const cpX = bird.cpX ?? (w / 2)
+          const cpY = bird.cpY ?? 300
+          const endX = bird.endX ?? (w + 120)
+          const endY = bird.endY ?? 200
+
+          // derivative B'(t) = 2(1-t)(P1-P0) + 2t(P2-P1)
+          const dx = 2 * (1 - p) * (cpX - startX) + 2 * p * (endX - cpX)
+          const dy = 2 * (1 - p) * (cpY - startY) + 2 * p * (endY - cpY)
+
+          let rotationDeg = Math.atan2(dy, dx) * (180 / Math.PI)
+          // clamp rotation to reasonable range
+          const MAX_ROT = 65
+          if (rotationDeg > MAX_ROT) rotationDeg = MAX_ROT
+          if (rotationDeg < -MAX_ROT) rotationDeg = -MAX_ROT
 
           return (
             <div
@@ -286,11 +335,11 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
               className="absolute"
               style={{
                 top: `${bird.top}px`,
-                width: "100px",
-                height: "100px",
+                width: `${BIRD_PIXEL_SIZE}px`,
+                height: `${BIRD_PIXEL_SIZE}px`,
                 left: 0,
-                // translateX handles horizontal movement, translateY adds wave motion, rotate adds angle, scale is fixed per bird
-                transform: `translateX(${x}px) translateY(${verticalOffset}px) rotate(${flightAngle}deg) scale(${scale})`,
+                // translateX/translateY position along bezier arc and rotate to match instantaneous direction
+                transform: `translateX(${x}px) translateY(${y}px) rotate(${rotationDeg}deg)`,
                 transition: `${opacityTransition}, transform 150ms linear`,
                 // combine creation fade (isVisible) with edge fade
                 opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,
@@ -300,7 +349,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
             <Image
               src={`/images/flying-birds/${bird.bird}`}
               alt=""
-              fill
+              width={BIRD_PIXEL_SIZE}
+              height={BIRD_PIXEL_SIZE}
               className="object-contain"
               style={{
                 filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))",
