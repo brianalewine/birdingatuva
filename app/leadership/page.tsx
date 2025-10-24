@@ -18,7 +18,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "president@uvabirdclub.virginia.edu",
 		bio: "Leading the club with passion for conservation and community building. Favorite bird: Peregrine Falcon.",
-		image: "/placeholder.svg?height=400&width=400",
+		image: "/images/exec-profiles/president.jpeg",
 	},
 	{
 		position: "Vice President",
@@ -27,7 +27,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "vp@uvabirdclub.virginia.edu",
 		bio: "Supporting club operations and coordinating with university partners. Favorite bird: Ruby-throated Hummingbird.",
-		image: "/placeholder.svg?height=400&width=400",
+		image: "/images/exec-profiles/vp.png",
 	},
 	{
 		position: "Treasurer",
@@ -36,7 +36,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "treasurer@uvabirdclub.virginia.edu",
 		bio: "Managing club finances and ensuring sustainable operations. Favorite bird: American Goldfinch.",
-		image: "/placeholder.svg?height=400&width=400",
+		image: "/images/exec-profiles/treasurer.png",
 	},
 	{
 		position: "Secretary",
@@ -45,7 +45,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "secretary@uvabirdclub.virginia.edu",
 		bio: "Keeping detailed records and managing communications. Favorite bird: Great Blue Heron.",
-		image: "/placeholder.svg?height=400&width=400",
+		image: "/images/exec-profiles/secretary.jpg",
 	},
 	{
 		position: "Events Coordinator",
@@ -54,7 +54,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "events@uvabirdclub.virginia.edu",
 		bio: "Planning exciting birding trips and educational workshops. Favorite bird: Cedar Waxwing.",
-		image: "/placeholder.svg?height=400&width=400",
+		image: "/images/exec-profiles/events-coordinator.png",
 	},
 	{
 		position: "Outreach Director",
@@ -63,7 +63,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "outreach@uvabirdclub.virginia.edu",
 		bio: "Connecting with the community and promoting bird conservation. Favorite bird: Baltimore Oriole.",
-		image: "/placeholder.svg?height=400&width=400",
+		image: "/images/exec-profiles/outreach-director.png",
 	},
 ]
 
