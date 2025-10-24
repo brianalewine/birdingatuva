@@ -191,7 +191,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="trips" className="py-20 px-4">
+        <section id="trips" className="py-20 px-4 scroll-mt-24">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="font-display text-5xl md:text-6xl font-bold mb-4 text-primary">LOCAL BIRDING TRIPS</h2>
