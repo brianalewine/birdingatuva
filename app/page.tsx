@@ -69,7 +69,23 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen relative">
-      <DecorativeBirds />
+      {/* read flying-birds filenames from public folder and pass into client component */}
+      {(() => {
+        const flyingDir = path.join(process.cwd(), "public/images/flying-birds")
+        let flyingImages: string[] = []
+        try {
+          flyingImages = fs.readdirSync(flyingDir).filter((file) => {
+            const ext = path.extname(file).toLowerCase()
+            const filePath = path.join(flyingDir, file)
+            const isFile = fs.statSync(filePath).isFile()
+            return isFile && [".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(ext) && !file.startsWith('.')
+          })
+        } catch (e) {
+          flyingImages = []
+        }
+
+        return <DecorativeBirds images={flyingImages} target={2} />
+      })()}
       <Navigation />
 
       <main className="relative z-10">
