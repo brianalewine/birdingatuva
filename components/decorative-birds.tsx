@@ -23,10 +23,9 @@ const BIRD_IMAGES = ["bird", "card", "fl", "rwb", "wb"]
 
 interface DecorativeBirdsProps {
   images?: string[]
-  target?: number
 }
 
-export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
+export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const [scrollY, setScrollY] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [isScrolling, setIsScrolling] = useState(false)
@@ -44,10 +43,6 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
   
   // use provided images array or fallback
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
-
-  // configurable target; default increased so there are more birds visible
-  const TARGET_BIRDS = target ?? 5
-  const MAX_BIRDS = TARGET_BIRDS + 2
 
   useEffect(() => {
     setMounted(true)
@@ -126,11 +121,19 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
     if (usedBirdsRef.current.size >= birdImageList.length) usedBirdsRef.current.clear()
 
     const duration = Math.random() * 5 + 8
+    
+    // Calculate spawn position from About section to Get in Touch section
+    // About section starts around 80vh (~800px), Get in Touch ends around page height
+    const pageHeight = typeof document !== "undefined" ? document.documentElement.scrollHeight : 3000
+    const aboutStart = typeof window !== "undefined" ? window.innerHeight * 0.8 : 800
+    const spawnRange = pageHeight - aboutStart - 400 // subtract some padding at bottom
+    const topPosition = aboutStart + (Math.random() * spawnRange)
+    
     const newBird: FlyingBird = {
       id: birdCounterRef.current++,
       bird: randomBird,
       direction,
-      top: Math.random() * 60 + 20,
+      top: topPosition,
       speed: duration,
       isVisible: false,
       progress: 0,
@@ -138,18 +141,14 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
       scale: 0.85 + Math.random() * 0.2,
     }
 
-    setFlyingBirds((prev) => {
-      // don't exceed MAX_BIRDS
-      if (prev.length >= MAX_BIRDS) return prev
-      return [...prev, newBird]
-    })
+    setFlyingBirds((prev) => [...prev, newBird])
 
     setTimeout(() => {
       setFlyingBirds((prev) => prev.map((b) => (b.id === newBird.id ? { ...b, isVisible: true } : b)))
     }, 16)
   }
 
-  // spawner: when scrolling (or after birds started), ensure ~TARGET_BIRDS are present
+  // spawner: spawn birds at regular intervals based on spawn rate only
   useEffect(() => {
     // start spawner if scrolling or there are already birds
     if (spawnIntervalRef.current) {
@@ -157,17 +156,11 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
       spawnIntervalRef.current = null
     }
 
-    // Always try to maintain target once birds have appeared or while scrolling
+    // Always spawn birds when scrolling or once birds have appeared
     if (isScrolling || flyingBirds.length > 0) {
-      // spawn immediately until target is met
-      const toSpawn = Math.max(0, TARGET_BIRDS - flyingBirds.length)
-      for (let i = 0; i < toSpawn; i++) spawnOne()
-
       spawnIntervalRef.current = setInterval(() => {
-        if (flyingBirds.length < TARGET_BIRDS) {
-          spawnOne()
-        }
-      }, 300) // increased spawn rate significantly for more frequent birds
+        spawnOne()
+      }, 800) // spawn rate controls bird frequency
     }
 
     return () => {
@@ -231,7 +224,7 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
         }}
       />
 
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-30">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
         {flyingBirds.map((bird) => {
           // compute x position from progress so updates are continuous and won't jump
           const w = typeof window !== "undefined" ? window.innerWidth : 1200
@@ -270,7 +263,7 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
               key={bird.id}
               className="absolute"
               style={{
-                top: `${bird.top}%`,
+                top: `${bird.top}px`,
                 width: "100px",
                 height: "100px",
                 left: 0,
