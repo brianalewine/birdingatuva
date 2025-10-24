@@ -20,8 +20,8 @@ interface FlyingBird {
   angle?: number
 }
 
-// Available bird images (fallback)
-const BIRD_IMAGES = ["bird", "card", "fl", "rwb", "wb"]
+// Available bird images (fallback) — include file extensions so client-only renders work
+const BIRD_IMAGES = ["bird.png", "card.png", "fl.png", "rwb.png", "wb.png"]
 
 interface DecorativeBirdsProps {
   images?: string[]

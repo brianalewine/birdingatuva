@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { SafeImage } from "@/components/ui/safe-image"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DecorativeBirds } from "@/components/decorative-birds"
@@ -96,7 +97,8 @@ export default function LeadershipPage() {
 									className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden border-2 hover:border-accent/50"
 								>
 									<div className="relative h-72 overflow-hidden">
-										<Image
+										{/* Use SafeImage to avoid broken icon if file fails to load */}
+										<SafeImage
 											src={exec.image || "/placeholder.svg"}
 											alt={exec.position}
 											fill
