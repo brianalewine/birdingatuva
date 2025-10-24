@@ -55,8 +55,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
 
   // limit concurrent birds and keep spawn frequency independent of how many files exist
-  const MAX_CONCURRENT_BIRDS = 9 // base concurrent birds per viewport
-  const SPAWN_RATE_MS = 700 // Slightly faster spawning (was 800ms)
+  const MAX_CONCURRENT_BIRDS = 8 // base concurrent birds per viewport (reduced slightly)
+  const SPAWN_RATE_MS = 750 // Slightly slower spawn to reduce total birds a hair
   // Render all bird images at a fixed pixel size so they appear uniform
   // (increased by 20% per request)
   const BIRD_PIXEL_SIZE = 66
@@ -170,7 +170,12 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     do {
       // Randomly choose start and end edges (0=left, 1=right, 2=top, 3=bottom)
       const startEdge = Math.floor(Math.random() * 4)
-      const endEdge = Math.floor(Math.random() * 4)
+      // pick endEdge but avoid a strict top<->bottom pairing which forces near-vertical crossing
+      let endEdge = Math.floor(Math.random() * 4)
+      if ((startEdge === 2 && endEdge === 3) || (startEdge === 3 && endEdge === 2)) {
+        // re-roll endEdge once to avoid guaranteed vertical crossing
+        endEdge = Math.floor(Math.random() * 4)
+      }
       
       // Start position
       if (startEdge === 0) { // left
