@@ -55,8 +55,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
 
   // limit concurrent birds and keep spawn frequency independent of how many files exist
-  const MAX_CONCURRENT_BIRDS = 6
-  const SPAWN_RATE_MS = 800
+  const MAX_CONCURRENT_BIRDS = 9 // base concurrent birds per viewport
+  const SPAWN_RATE_MS = 700 // Slightly faster spawning (was 800ms)
   // Render all bird images at a fixed pixel size so they appear uniform
   // (increased by 20% per request)
   const BIRD_PIXEL_SIZE = 66
@@ -159,50 +159,125 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     const minY = Math.max(100, viewportTop - bufferAbove)
     const maxY = Math.min(pageHeight - 200, viewportBottom + bufferBelow)
     
-    // Randomly choose start and end edges (0=left, 1=right, 2=top, 3=bottom)
-    const startEdge = Math.floor(Math.random() * 4)
-    const endEdge = Math.floor(Math.random() * 4)
+    // Minimum distance to prevent tight circles (at least half screen width)
+    const MIN_DISTANCE = w * 0.5
     
     let startX: number, startY: number, endX: number, endY: number
+    let pathDistance: number
+    let pathAttempts = 0
     
-    // Start position
-    if (startEdge === 0) { // left
-      startX = -120
-      startY = minY + Math.random() * (maxY - minY)
-    } else if (startEdge === 1) { // right
-      startX = w + 120
-      startY = minY + Math.random() * (maxY - minY)
-    } else if (startEdge === 2) { // top
-      startX = Math.random() * w
-      startY = minY
-    } else { // bottom
-      startX = Math.random() * w
-      startY = maxY
+    // Keep generating start/end positions until we get a path that's long enough
+    do {
+      // Randomly choose start and end edges (0=left, 1=right, 2=top, 3=bottom)
+      const startEdge = Math.floor(Math.random() * 4)
+      const endEdge = Math.floor(Math.random() * 4)
+      
+      // Start position
+      if (startEdge === 0) { // left
+        startX = -120
+        startY = minY + Math.random() * (maxY - minY)
+      } else if (startEdge === 1) { // right
+        startX = w + 120
+        startY = minY + Math.random() * (maxY - minY)
+      } else if (startEdge === 2) { // top
+        startX = Math.random() * w
+        startY = minY
+      } else { // bottom
+        startX = Math.random() * w
+        startY = maxY
+      }
+      
+      // End position
+      if (endEdge === 0) { // left
+        endX = -120
+        endY = minY + Math.random() * (maxY - minY)
+      } else if (endEdge === 1) { // right
+        endX = w + 120
+        endY = minY + Math.random() * (maxY - minY)
+      } else if (endEdge === 2) { // top
+        endX = Math.random() * w
+        endY = minY
+      } else { // bottom
+        endX = Math.random() * w
+        endY = maxY
+      }
+      
+      // Calculate straight-line distance between start and end
+      pathDistance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2))
+      pathAttempts++
+    } while (pathDistance < MIN_DISTANCE && pathAttempts < 20)
+    
+  // Determine direction based on horizontal movement
+  const actualDirection = endX > startX ? "right" : "left"
+
+  // Compute a dynamic concurrent limit based on page length so very long pages
+  // can host more birds without feeling sparse. Use the number of viewports
+  // stacked in the page to scale the base limit, clamped to a reasonable max.
+  const viewportCount = Math.max(1, Math.round(pageHeight / h))
+  const dynamicMax = Math.min(30, Math.max(MAX_CONCURRENT_BIRDS, MAX_CONCURRENT_BIRDS * viewportCount))
+    
+    // Control point with validation to ensure birds never fly upside down
+    // Birds can rotate between -67° and +67°, but NEVER backwards (outside -90° to +90°)
+    let cpX: number, cpY: number
+    let arcAttempts = 0
+    let isValidArc = false
+    
+    do {
+      // Generate random control point with larger offset for dramatic arcs
+      const midX = (startX + endX) / 2
+      const midY = (startY + endY) / 2
+      cpX = midX + (Math.random() - 0.5) * w * 0.6
+      cpY = midY + (Math.random() - 0.5) * h * 0.6
+      
+      // Sample the curve at many points to check ALL tangent angles
+      isValidArc = true
+      const samplePoints = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+      
+      for (const t of samplePoints) {
+        // Calculate tangent: B'(t) = 2(1-t)(P1-P0) + 2t(P2-P1)
+        const dx = 2 * (1 - t) * (cpX - startX) + 2 * t * (endX - cpX)
+        const dy = 2 * (1 - t) * (cpY - startY) + 2 * t * (endY - cpY)
+        
+        // Calculate angle in degrees (-180 to +180)
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI)
+        
+        // First check: No backwards flight (angle must be between -90 and +90)
+        if (angle > 90 || angle < -90) {
+          isValidArc = false
+          break
+        }
+        
+        // Second check: Limit steepness to ±67° for natural flight
+        if (Math.abs(angle) > 67) {
+          isValidArc = false
+          break
+        }
+      }
+
+      // Also explicitly check the tangent at the endpoint (p=1) ---
+      // This prevents cases where the middle of the curve is ok but the
+      // endpoint tangent is nearly vertical (which later becomes the
+      // off-curve direction we continue along).
+      if (isValidArc) {
+        const endTangentX = 2 * (endX - cpX)
+        const endTangentY = 2 * (endY - cpY)
+        const endAngle = Math.atan2(endTangentY, endTangentX) * (180 / Math.PI)
+        if (endAngle > 90 || endAngle < -90 || Math.abs(endAngle) > 67) {
+          isValidArc = false
+        }
+      }
+      
+      arcAttempts++
+    } while (!isValidArc && arcAttempts < 20)
+    
+    // If we couldn't find a valid arc, create a safe horizontal arc
+    if (!isValidArc) {
+      const midX = (startX + endX) / 2
+      const midY = (startY + endY) / 2
+      // Create a very gentle arc - mostly horizontal
+      cpX = midX + (Math.random() - 0.5) * w * 0.3
+      cpY = midY + (Math.random() - 0.5) * h * 0.15
     }
-    
-    // End position
-    if (endEdge === 0) { // left
-      endX = -120
-      endY = minY + Math.random() * (maxY - minY)
-    } else if (endEdge === 1) { // right
-      endX = w + 120
-      endY = minY + Math.random() * (maxY - minY)
-    } else if (endEdge === 2) { // top
-      endX = Math.random() * w
-      endY = minY
-    } else { // bottom
-      endX = Math.random() * w
-      endY = maxY
-    }
-    
-    // Determine direction based on horizontal movement
-    const actualDirection = endX > startX ? "right" : "left"
-    
-    // Control point with larger random offset to create more dramatic arcs
-    const midX = (startX + endX) / 2
-    const midY = (startY + endY) / 2
-    const cpX = midX + (Math.random() - 0.5) * w * 0.6
-    const cpY = midY + (Math.random() - 0.5) * h * 0.6
     
     // Random flight angle (not used directly anymore since arc determines direction)
     const flightAngle = 0
@@ -229,7 +304,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
 
     // add the bird using functional update to avoid stale closures and enforce max concurrent birds
     setFlyingBirds((prev) => {
-      if (prev.length >= MAX_CONCURRENT_BIRDS) return prev
+      if (prev.length >= dynamicMax) return prev
       return [...prev, newBird]
     })
 
@@ -275,18 +350,57 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         setFlyingBirds((prev) => {
         if (prev.length === 0) return prev
         const w = typeof window !== "undefined" ? window.innerWidth : 1200
+        const h = typeof window !== "undefined" ? window.innerHeight : 800
+        
         const updated = prev.map((b) => {
           const baseV = b.baseVelocity ?? (1 / (b.speed * 1000))
           // effective velocity scales with birdSpeed; when we've slowed to MIN and not scrolling, pause fully
           const effectiveV = !isScrolling && birdSpeed <= MIN_SPEED_FACTOR + 0.001 ? 0 : baseV * birdSpeed
           const added = effectiveV * delta
-          const newProgress = Math.min(1.15, (b.progress ?? 0) + added)
+          // Don't clamp progress - let birds continue moving beyond their path end point
+          const newProgress = (b.progress ?? 0) + added
           return { ...b, progress: newProgress }
         })
 
-        // Remove birds after they've completed their progress AND faded out
-        // Allow progress up to 1.15 to give time for fade-out animation
-        return updated.filter((b) => (b.progress ?? 0) < 1.15)
+        // Remove birds only when they're definitely off-screen
+        // Compute a conservative on-screen position for each bird and only
+        // remove it once it's both past a progress threshold and off the viewport
+        return updated.filter((b) => {
+          const progress = b.progress ?? 0
+          // If the bird hasn't passed the basic endpoint, keep it
+          if (progress < 1.2) return true
+
+          // Approximate its current x position (same logic as render):
+          const startX = b.startX ?? -120
+          const startY = b.startY ?? 200
+          const cpX = b.cpX ?? (w / 2)
+          const cpY = b.cpY ?? 300
+          const endX = b.endX ?? (w + 120)
+          const endY = b.endY ?? 200
+          const rawProgress = progress
+
+          let xPos: number
+          if (rawProgress <= 1) {
+            const p = rawProgress
+            xPos = ((1 - p) * (1 - p) * startX) + (2 * (1 - p) * p * cpX) + (p * p * endX)
+          } else {
+            // continue along endpoint tangent
+            const tangentX = 2 * (endX - cpX)
+            const tangentY = 2 * (endY - cpY)
+            const mag = Math.sqrt(tangentX * tangentX + tangentY * tangentY) || 1
+            const nx = tangentX / mag
+            const extra = (rawProgress - 1) * 800
+            xPos = endX + nx * extra
+          }
+
+          // Remove only once bird is well off-screen horizontally
+          const OFFSCREEN_MARGIN = 160
+          if (xPos < -120 - OFFSCREEN_MARGIN) return false
+          if (xPos > w + 120 + OFFSCREEN_MARGIN) return false
+
+          // If still within that range, keep it so it can fade/move out
+          return true
+        })
       })
 
       rafRef.current = requestAnimationFrame(loop)
@@ -322,33 +436,67 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         {flyingBirds.map((bird) => {
           // compute x position from progress so updates are continuous and won't jump
           const w = typeof window !== "undefined" ? window.innerWidth : 1200
-          const p = bird.progress ?? 0
-
-          // Quadratic Bezier evaluation for position
-          const x = ((1 - p) * (1 - p) * (bird.startX ?? -120)) + (2 * (1 - p) * p * (bird.cpX ?? (w / 2))) + (p * p * (bird.endX ?? (w + 120)))
-          const y = ((1 - p) * (1 - p) * (bird.startY ?? 200)) + (2 * (1 - p) * p * (bird.cpY ?? 300)) + (p * p * (bird.endY ?? 200))
-
-          // Edge fade calculation - fade based on distance to viewport edges
-          // Birds start/end at -120 or w+120, so fade within the viewport area
-          const FADE_DISTANCE_LEFT = 150 // Shorter fade on left for quicker appearance
-          const FADE_DISTANCE_RIGHT = 200 // Longer fade on right for smoother exit
+          const rawProgress = bird.progress ?? 0
           
-          // Fade starts when bird enters viewport (x=0) and completes at FADE_DISTANCE
-          const leftFade = x < 0 ? 0 : (x < FADE_DISTANCE_LEFT ? x / FADE_DISTANCE_LEFT : 1)
-          
-          // Fade starts when bird is FADE_DISTANCE from right edge
-          const rightFade = x > w ? 0 : (x > w - FADE_DISTANCE_RIGHT ? (w - x) / FADE_DISTANCE_RIGHT : 1)
-          
-          // Use the minimum fade (most restrictive)
-          const edgeOpacity = Math.min(leftFade, rightFade)
-
-          // Compute derivative of Bezier for instantaneous direction (for rotation)
           const startX = bird.startX ?? -120
           const startY = bird.startY ?? 200
           const cpX = bird.cpX ?? (w / 2)
           const cpY = bird.cpY ?? 300
           const endX = bird.endX ?? (w + 120)
           const endY = bird.endY ?? 200
+          
+          let x: number, y: number
+          
+          if (rawProgress <= 1) {
+            // Normal bezier curve while progress <= 1
+            const p = rawProgress
+            x = ((1 - p) * (1 - p) * startX) + (2 * (1 - p) * p * cpX) + (p * p * endX)
+            y = ((1 - p) * (1 - p) * startY) + (2 * (1 - p) * p * cpY) + (p * p * endY)
+          } else {
+            // After progress > 1, continue in the direction of the tangent at p=1
+            // This makes birds continue off-screen smoothly
+            const p = 1
+            const baseX = endX
+            const baseY = endY
+            
+            // Get tangent direction at p=1: B'(1) = 2(P2 - P1)
+            const tangentX = 2 * (endX - cpX)
+            const tangentY = 2 * (endY - cpY)
+            
+            // Normalize the tangent to maintain consistent speed
+            const tangentMagnitude = Math.sqrt(tangentX * tangentX + tangentY * tangentY)
+            const normalizedTangentX = tangentX / tangentMagnitude
+            const normalizedTangentY = tangentY / tangentMagnitude
+            
+            // Continue moving in that direction at a consistent speed
+            // Use a large scaling factor to ensure birds quickly move off-screen
+            const extraProgress = (rawProgress - 1) * 800 // Increased from 500 for faster off-screen movement
+            x = baseX + normalizedTangentX * extraProgress
+            y = baseY + normalizedTangentY * extraProgress
+          }
+
+          // Edge fade calculation - fade based on distance to viewport edges
+          // Birds should maintain 10% opacity at the edges (not fade to 0)
+          const FADE_DISTANCE_LEFT = 150 // Shorter fade on left for quicker appearance
+          const FADE_DISTANCE_RIGHT = 200 // Longer fade on right for smoother exit
+          const MIN_OPACITY = 0.1 // Minimum opacity at edges
+          
+          // Fade from MIN_OPACITY to 1 as bird enters from left
+          // At x=0 (edge): opacity = MIN_OPACITY
+          // At x=FADE_DISTANCE: opacity = 1
+          const leftFade = x < 0 ? MIN_OPACITY : (x < FADE_DISTANCE_LEFT ? MIN_OPACITY + (x / FADE_DISTANCE_LEFT) * (1 - MIN_OPACITY) : 1)
+          
+          // Fade from 1 to MIN_OPACITY as bird exits to right
+          // At x=w-FADE_DISTANCE: opacity = 1
+          // At x=w (edge): opacity = MIN_OPACITY
+          const rightFade = x > w ? MIN_OPACITY : (x > w - FADE_DISTANCE_RIGHT ? MIN_OPACITY + ((w - x) / FADE_DISTANCE_RIGHT) * (1 - MIN_OPACITY) : 1)
+          
+          // Use the minimum fade (most restrictive)
+          const edgeOpacity = Math.min(leftFade, rightFade)
+
+          // Compute derivative of Bezier for instantaneous direction (for rotation)
+          // Use p=1 for rotation if we're past the curve
+          const p = Math.min(1, rawProgress)
 
           // derivative B'(t) = 2(1-t)(P1-P0) + 2t(P2-P1)
           const dx = 2 * (1 - p) * (cpX - startX) + 2 * p * (endX - cpX)

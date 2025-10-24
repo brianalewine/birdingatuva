@@ -206,7 +206,7 @@ export function LeadershipClient({ birdImages }: LeadershipClientProps) {
 						<Card className="text-center shadow-xl border-2 border-accent/20">
 							<CardHeader>
 								<CardTitle className="font-display text-4xl md:text-5xl mb-4">
-									JOIN OUR TEAM?
+									JOIN OUR TEAM!
 								</CardTitle>
 								<CardDescription className="text-base leading-relaxed">
 									Elections happen each spring, and all members are welcome to
