@@ -14,59 +14,106 @@ import { useState } from "react"
 const executives = [
 	{
 		position: "President",
-		name: "[Name]",
-		major: "[Major]",
-		year: "Class of [Year]",
+		name: "Brian Alewine",
+		major: "Computer Science",
+		year: "Class of 2026",
 		email: "president@uvabirdclub.virginia.edu",
 		bio: "Leading the club with passion for conservation and community building. Favorite bird: Peregrine Falcon.",
 		image: "/images/exec-profiles/president.jpeg",
 	},
 	{
 		position: "Vice President",
-		name: "[Name]",
-		major: "[Major]",
-		year: "Class of [Year]",
+		name: "Jessica Lee",
+		major: "Environmental Science",
+		year: "Class of 2027",
 		email: "vp@uvabirdclub.virginia.edu",
 		bio: "Supporting club operations and coordinating with university partners. Favorite bird: Ruby-throated Hummingbird.",
 		image: "/images/exec-profiles/vp.png",
 	},
 	{
 		position: "Treasurer",
-		name: "[Name]",
-		major: "[Major]",
-		year: "Class of [Year]",
+		name: "Ethan Brooks",
+		major: "Economics",
+		year: "Class of 2025",
 		email: "treasurer@uvabirdclub.virginia.edu",
-		bio: "Managing club finances and ensuring sustainable operations. Favorite bird: American Goldfinch.",
+		bio: "Keeps the club's coffers balanced and snacks inventoried. Enjoys spreadsheets, strong coffee, and spotting orioles.",
 		image: "/images/exec-profiles/treasurer.png",
 	},
 	{
 		position: "Secretary",
-		name: "[Name]",
-		major: "[Major]",
-		year: "Class of [Year]",
+		name: "Maya Singh",
+		major: "Biology",
+		year: "Class of 2026",
 		email: "secretary@uvabirdclub.virginia.edu",
-		bio: "Keeping detailed records and managing communications. Favorite bird: Great Blue Heron.",
+		bio: "Organizer extraordinaire and note-taking ninja. Loves field notebooks, warm tea, and sketching her favorite shorebirds.",
 		image: "/images/exec-profiles/secretary.jpg",
 	},
 	{
 		position: "Events Coordinator",
-		name: "[Name]",
-		major: "[Major]",
-		year: "Class of [Year]",
+		name: "Olivia Park",
+		major: "History",
+		year: "Class of 2027",
 		email: "events@uvabirdclub.virginia.edu",
-		bio: "Planning exciting birding trips and educational workshops. Favorite bird: Cedar Waxwing.",
+		bio: "Plans unforgettable trips and playlists for dawn watches. Loves colorful scarves, group singalongs, and finding hidden birding spots.",
 		image: "/images/exec-profiles/events-coordinator.jpg",
 	},
 	{
 		position: "Outreach Director",
-		name: "[Name]",
-		major: "[Major]",
-		year: "Class of [Year]",
+		name: "Daniel Ruiz",
+		major: "Psychology",
+		year: "Class of 2025",
 		email: "outreach@uvabirdclub.virginia.edu",
-		bio: "Connecting with the community and promoting bird conservation. Favorite bird: Baltimore Oriole.",
+		bio: "Builds bridges with the community and organizes outreach events. Enjoys storytelling, empanadas, and introducing kids to backyard birds.",
 		image: "/images/exec-profiles/outreach-director.png",
 	},
 ]
+
+// Fun bios and favorite birds for each exec
+function getFunBio(name: string) {
+	switch (name) {
+ 		case "Brian Alewine":
+ 			return "Can identify birds by their calls and by their vibes. Once tried to teach a crow to code. Enjoys sunrise walks and spontaneous bird trivia challenges.";
+ 		case "Jessica Lee":
+ 			return "Thinks every bird deserves a theme song. Has a collection of bird-shaped mugs and can whistle like a chickadee. Loves hiking and making up bird puns.";
+ 		case "Alex Kim":
+			return "Keeps a spreadsheet of every bird seen (and every snack eaten on trips). Known for impromptu dance moves when spotting a lifer. Enjoys puzzles and bird memes.";
+		case "Priya Patel":
+			return "Writes poetry inspired by birds and clouds. Can recite bird facts in three languages. Loves sketching birds and organizing surprise picnics.";
+		case "Ethan Brooks":
+			return "Keeps the club's coffers balanced and snacks inventoried. Enjoys spreadsheets, strong coffee, and spotting orioles.";
+		case "Maya Singh":
+			return "Organizer extraordinaire and note-taking ninja. Loves field notebooks, warm tea, and sketching her favorite shorebirds.";
+		case "Olivia Park":
+			return "Plans unforgettable trips and playlists for dawn watches. Loves colorful scarves, group singalongs, and finding hidden birding spots.";
+		case "Daniel Ruiz":
+			return "Builds bridges with the community and organizes outreach events. Enjoys storytelling, empanadas, and introducing kids to backyard birds.";
+ 		default:
+ 			return "Loves birds, adventure, and bringing people together!";
+ 	}
+}
+
+function getFavoriteBird(name: string) {
+ 	switch (name) {
+ 		case "Brian Alewine":
+ 			return "Peregrine Falcon";
+ 		case "Jessica Lee":
+ 			return "Ruby-throated Hummingbird";
+		case "Alex Kim":
+			return "American Goldfinch";
+		case "Priya Patel":
+			return "Great Blue Heron";
+		case "Ethan Brooks":
+			return "Baltimore Oriole";
+		case "Maya Singh":
+			return "Snowy Egret";
+		case "Olivia Park":
+			return "Cedar Waxwing";
+		case "Daniel Ruiz":
+			return "Northern Mockingbird";
+ 		default:
+ 			return "Northern Cardinal";
+ 	}
+}
 
 export default function LeadershipPage() {
 	const [showNotification, setShowNotification] = useState(false)
@@ -88,38 +135,42 @@ export default function LeadershipPage() {
           description="Meet the dedicated students leading the UVA Bird Club"
         />
 
-				<section className="py-20 px-4">
-					<div className="container mx-auto max-w-6xl relative z-20">
-						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+				<section className="py-20 px-16">
+					<div className="container mx-auto max-w-7xl relative z-20">
+						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-20">
 							{executives.map((exec, index) => (
 								<Card
 									key={index}
-									className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden border-2 hover:border-accent/50"
+									className="overflow-hidden border-2 pt-0 gap-0 shadow-none"
 								>
-									<div className="relative h-72 overflow-hidden">
+									<div className="relative h-64 md:h-72 lg:h-80 overflow-hidden">
 										{/* Use SafeImage to avoid broken icon if file fails to load */}
 										<SafeImage
 											src={exec.image || "/placeholder.svg"}
 											alt={exec.position}
 											fill
-											className="object-cover group-hover:scale-110 transition-transform duration-500"
+											className="object-cover"
 										/>
-										<div className="absolute top-4 left-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-bold">
+									</div>
+									{/* Name bar sits directly below the image so it doesn't cover the photo */}
+									<div className="bg-[#203A64] text-white flex items-center justify-center">
+										<span className="text-white font-display text-3xl md:text-4xl font-bold w-full text-center py-2">{exec.name}</span>
+									</div>
+									<CardHeader className="space-y-2 text-center pt-3">
+										<div className="text-lg font-extrabold mb-1" style={{ color: '#36834C' }}>
 											{exec.position}
 										</div>
-									</div>
-									<CardHeader className="space-y-2">
-										<CardTitle className="font-display text-2xl">
-											{exec.name}
-										</CardTitle>
 										<CardDescription className="text-base">
-											{exec.major} • {exec.year}
+											{exec.major} <span className="mx-2 text-muted-foreground">|</span> {exec.year}
 										</CardDescription>
 									</CardHeader>
 									<CardContent className="space-y-4">
-										<p className="text-muted-foreground text-sm leading-relaxed">
-											{exec.bio}
+										<p className="text-muted-foreground text-base leading-relaxed">
+											{getFunBio(exec.name)}
 										</p>
+										<div className="text-center mt-2">
+											<span className="inline-block bg-transparent border border-slate-200 text-slate-800 font-semibold px-3 py-1 rounded-md text-sm">Favorite bird: {getFavoriteBird(exec.name)}</span>
+										</div>
 										<Button
 											variant="outline"
 											size="sm"
