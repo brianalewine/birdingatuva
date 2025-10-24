@@ -46,7 +46,7 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
 
   // configurable target; default increased so there are more birds visible
-  const TARGET_BIRDS = target ?? 3
+  const TARGET_BIRDS = target ?? 5
   const MAX_BIRDS = TARGET_BIRDS + 2
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
         if (flyingBirds.length < TARGET_BIRDS) {
           spawnOne()
         }
-      }, 1800)
+      }, 300) // increased spawn rate significantly for more frequent birds
     }
 
     return () => {
@@ -239,16 +239,31 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
           const distance = bird.direction === "right" ? w + 240 : -(w + 240)
           const x = start + (bird.progress ?? 0) * distance
 
-          // compute edge fade in pixels so both left and right sides behave identically
-          const FADE_PX = Math.max(140, Math.floor(w * 0.12))
+          // compute edge fade with separate ranges for entering (fade-in) and exiting (fade-out)
+          // adjust fade distances for left and right edges separately
+          // left side shorter than right side
+          const FADE_PX_LEFT = Math.max(80, Math.floor(w * 0.05)) * 1.5
+          const FADE_PX_RIGHT = Math.max(150, Math.floor(w * 0.12)) * 2
           const birdLeft = x
           const birdRight = x + 100
+          const p = bird.progress ?? 0
+          // distance to left and right edges in pixels
+          const distToLeft = birdRight
+          const distToRight = w - birdLeft
           let edgeOpacity = 1
-          if (birdRight < FADE_PX) edgeOpacity = birdRight / FADE_PX
-          else if (birdLeft > w - FADE_PX) edgeOpacity = (w - birdLeft) / FADE_PX
-          edgeOpacity = Math.max(0, Math.min(1, edgeOpacity))
+
+          if (p < 0.15) {
+            // entering: use left fade distance for left edge, right for right edge
+            const fadeDistance = bird.direction === "right" ? FADE_PX_LEFT : FADE_PX_RIGHT
+            edgeOpacity = Math.min(1, Math.min(distToLeft, distToRight) / fadeDistance)
+          } else if (p > 0.85) {
+            // exiting: use right fade distance for right edge, left for left edge
+            const fadeDistance = bird.direction === "right" ? FADE_PX_RIGHT : FADE_PX_LEFT
+            edgeOpacity = Math.min(1, Math.min(distToLeft, distToRight) / fadeDistance)
+          }
 
           const scale = (bird as any).scale ?? 0.95
+          const opacityTransition = p > 0.85 ? "opacity 200ms ease" : "opacity 700ms ease"
 
           return (
             <div
@@ -261,7 +276,7 @@ export function DecorativeBirds({ images, target }: DecorativeBirdsProps) {
                 left: 0,
                 // translateX handles the movement across the screen; scale is fixed per bird
                 transform: `translateX(${x}px) scale(${scale})`,
-                transition: "opacity 700ms ease, transform 150ms linear",
+                transition: `${opacityTransition}, transform 150ms linear`,
                 // combine creation fade (isVisible) with edge fade
                 opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,
                 willChange: "transform, opacity",
