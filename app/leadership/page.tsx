@@ -54,7 +54,7 @@ const executives = [
 		year: "Class of [Year]",
 		email: "events@uvabirdclub.virginia.edu",
 		bio: "Planning exciting birding trips and educational workshops. Favorite bird: Cedar Waxwing.",
-		image: "/images/exec-profiles/events-coordinator.png",
+		image: "/images/exec-profiles/events-coordinator.jpg",
 	},
 	{
 		position: "Outreach Director",
