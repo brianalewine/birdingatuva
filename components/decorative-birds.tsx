@@ -124,12 +124,12 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
 
     const duration = Math.random() * 5 + 8
     
-    // Calculate spawn position from About section to Get in Touch section
-    // About section starts around 80vh (~800px), Get in Touch ends around page height
+    // Calculate spawn position from About section to before footer
+    // About section starts around 80vh (~800px), stop well before footer (leave 800px at bottom)
     const pageHeight = typeof document !== "undefined" ? document.documentElement.scrollHeight : 3000
     const aboutStart = typeof window !== "undefined" ? window.innerHeight * 0.8 : 800
-    const spawnRange = pageHeight - aboutStart - 400 // subtract some padding at bottom
-    const topPosition = aboutStart + (Math.random() * spawnRange)
+    const spawnRange = pageHeight - aboutStart - 800 // increased padding to avoid footer margin area
+    const topPosition = aboutStart + (Math.random() * Math.max(100, spawnRange))
     
     // Random flight angle between -45 and +45 degrees
     const flightAngle = (Math.random() * 90) - 45
