@@ -30,7 +30,7 @@ export function Navigation() {
               height={50}
               className="rounded-full"
             />
-            <span className="font-sans text-lg md:text-xl font-semibold tracking-wide hidden sm:block">
+            <span className="font-sans text-xl md:text-2xl font-medium tracking-wider hidden sm:block">
               {"Hoo's Watching Hoos"}
             </span>
           </Link>
