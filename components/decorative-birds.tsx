@@ -216,8 +216,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const viewportCount = Math.max(1, Math.round(pageHeight / h))
   const dynamicMax = Math.min(30, Math.max(MAX_CONCURRENT_BIRDS, MAX_CONCURRENT_BIRDS * viewportCount))
     
-    // Control point with validation to ensure birds never fly upside down
-    // Birds can rotate between -67° and +67°, but NEVER backwards (outside -90° to +90°)
+  // Control point with validation to ensure birds never fly upside down
+  // Birds can rotate between -60° and +60°, but NEVER backwards (outside -90° to +90°)
     let cpX: number, cpY: number
     let arcAttempts = 0
     let isValidArc = false
@@ -229,9 +229,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
       cpX = midX + (Math.random() - 0.5) * w * 0.6
       cpY = midY + (Math.random() - 0.5) * h * 0.6
       
-      // Sample the curve at many points to check ALL tangent angles
-      isValidArc = true
-      const samplePoints = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  // Sample the curve at many points to check ALL tangent angles
+  isValidArc = true
+  const samplePoints = [0.15, 0.3, 0.45, 0.6, 0.75] // focus on mid-curve
       
       for (const t of samplePoints) {
         // Calculate tangent: B'(t) = 2(1-t)(P1-P0) + 2t(P2-P1)
@@ -247,8 +247,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           break
         }
         
-        // Second check: Limit steepness to ±67° for natural flight
-        if (Math.abs(angle) > 67) {
+        
+        // Second check: Limit steepness to ±60° for natural flight
+        if (Math.abs(angle) > 60) {
           isValidArc = false
           break
         }
@@ -262,21 +263,21 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         const endTangentX = 2 * (endX - cpX)
         const endTangentY = 2 * (endY - cpY)
         const endAngle = Math.atan2(endTangentY, endTangentX) * (180 / Math.PI)
-        if (endAngle > 90 || endAngle < -90 || Math.abs(endAngle) > 67) {
+        if (endAngle > 90 || endAngle < -90 || Math.abs(endAngle) > 60) {
           isValidArc = false
         }
       }
       
       arcAttempts++
-    } while (!isValidArc && arcAttempts < 20)
+    } while (!isValidArc && arcAttempts < 30)
     
-    // If we couldn't find a valid arc, create a safe horizontal arc
+    // If we couldn't find a valid arc, create a safe horizontal arc (stronger bias)
     if (!isValidArc) {
       const midX = (startX + endX) / 2
       const midY = (startY + endY) / 2
-      // Create a very gentle arc - mostly horizontal
-      cpX = midX + (Math.random() - 0.5) * w * 0.3
-      cpY = midY + (Math.random() - 0.5) * h * 0.15
+      // Create a gentle arc - more horizontal bias to avoid steep angles
+      cpX = midX + (Math.random() - 0.5) * w * 0.2
+      cpY = midY + (Math.random() - 0.5) * h * 0.06
     }
     
     // Random flight angle (not used directly anymore since arc determines direction)
