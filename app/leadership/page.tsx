@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DecorativeBirds } from "@/components/decorative-birds"
+import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Mail } from "lucide-react"
@@ -81,12 +82,10 @@ export default function LeadershipPage() {
 			<Navigation />
 
       <main className="relative z-10">
-        <section className="relative py-20 px-4 bg-gradient-to-br from-primary via-primary/90 to-accent text-white">
-          <div className="container mx-auto max-w-4xl text-center">
-            <h1 className="font-display text-6xl md:text-7xl font-bold mb-4">OUR LEADERSHIP</h1>
-            <p className="text-xl text-white/90">Meet the dedicated students leading the UVA Bird Club</p>
-          </div>
-        </section>
+        <PageHeader 
+          title="OUR LEADERSHIP"
+          description="Meet the dedicated students leading the UVA Bird Club"
+        />
 
 				<section className="py-20 px-4">
 					<div className="container mx-auto max-w-6xl">

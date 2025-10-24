@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { DecorativeBirds } from "@/components/decorative-birds"
+import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronDown, Search } from "lucide-react"
@@ -142,13 +143,10 @@ export default function FAQPage() {
       <Navigation />
 
       <main className="relative z-10">
-        {/* Hero Banner */}
-        <section className="relative py-20 px-4 bg-gradient-to-br from-primary via-primary/90 to-accent text-white">
-          <div className="container mx-auto max-w-4xl text-center">
-            <h1 className="font-display text-6xl md:text-7xl font-bold mb-4">FAQ</h1>
-            <p className="text-xl text-white/90">Everything you need to know about the UVA Bird Club</p>
-          </div>
-        </section>
+        <PageHeader 
+          title="FAQ"
+          description="Everything you need to know about the UVA Bird Club"
+        />
 
         <section className="py-12 px-4">
           <div className="container mx-auto max-w-6xl">
