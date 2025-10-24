@@ -213,7 +213,7 @@ export default function HomePage() {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">{trip.frequency}</Badge>
+                    <Badge className="absolute top-4 right-4 shadow-lg font-semibold text-sm" style={{ backgroundColor: '#36834C', color: 'white' }}>{trip.frequency}</Badge>
                   </div>
                   <CardHeader>
                     <CardTitle className="font-display text-2xl">{trip.name}</CardTitle>
