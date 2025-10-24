@@ -161,6 +161,98 @@
   }
 }
 
+@keyframes fly-across-right-wave {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  10% {
+    transform: translateX(10vw) translateY(-15px);
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(20vw) translateY(-35px);
+  }
+  30% {
+    transform: translateX(30vw) translateY(-15px);
+  }
+  40% {
+    transform: translateX(40vw) translateY(10px);
+  }
+  50% {
+    transform: translateX(50vw) translateY(30px);
+  }
+  60% {
+    transform: translateX(60vw) translateY(10px);
+  }
+  70% {
+    transform: translateX(70vw) translateY(-15px);
+  }
+  80% {
+    transform: translateX(80vw) translateY(-30px);
+  }
+  90% {
+    transform: translateX(90vw) translateY(-10px);
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(100vw) translateY(0);
+    opacity: 0;
+  }
+}
+
+@keyframes fly-across-left-wave {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  10% {
+    transform: translateX(-10vw) translateY(-15px);
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(-20vw) translateY(-35px);
+  }
+  30% {
+    transform: translateX(-30vw) translateY(-15px);
+  }
+  40% {
+    transform: translateX(-40vw) translateY(10px);
+  }
+  50% {
+    transform: translateX(-50vw) translateY(30px);
+  }
+  60% {
+    transform: translateX(-60vw) translateY(10px);
+  }
+  70% {
+    transform: translateX(-70vw) translateY(-15px);
+  }
+  80% {
+    transform: translateX(-80vw) translateY(-30px);
+  }
+  90% {
+    transform: translateX(-90vw) translateY(-10px);
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-100vw) translateY(0);
+    opacity: 0;
+  }
+}
+
 @keyframes fly-across-left {
   0% {
     transform: translateX(100vw) translateY(0) scaleX(-1);
@@ -200,6 +292,14 @@
 
 .animate-fly-across-left {
   animation: fly-across-left 12s linear;
+}
+
+.animate-fly-across-right-wave {
+  animation: fly-across-right-wave 12s linear;
+}
+
+.animate-fly-across-left-wave {
+  animation: fly-across-left-wave 12s linear;
 }
 
 /* Utility class for display font */
