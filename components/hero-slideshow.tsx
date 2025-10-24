@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import Image from "next/image"
 
 interface HeroSlideshowProps {
@@ -10,21 +10,26 @@ interface HeroSlideshowProps {
 export function HeroSlideshow({ images }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  
+  // Randomize images order on component mount
+  const shuffledImages = useMemo(() => {
+    return [...images].sort(() => Math.random() - 0.5)
+  }, []) // Empty dependency array ensures this only runs once on mount
 
   useEffect(() => {
-    if (images.length === 0) return
+    if (shuffledImages.length === 0) return
 
     const interval = setInterval(() => {
       setIsTransitioning(true)
       
       setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % shuffledImages.length)
         setIsTransitioning(false)
       }, 1000) // 1 second transition
     }, 10000) // 10 seconds per image
 
     return () => clearInterval(interval)
-  }, [images.length])
+  }, [shuffledImages.length])
 
   if (images.length === 0) {
     return (
@@ -34,7 +39,7 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
 
   return (
     <div className="absolute inset-0 z-10">
-      {images.map((imageName, index) => (
+      {shuffledImages.map((imageName, index) => (
         <div
           key={imageName}
           className={`absolute inset-0 transition-opacity duration-1000 ${
@@ -47,7 +52,7 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
             src={`/images/hero-backgrounds/${imageName}`}
             alt=""
             fill
-            className="object-cover"
+            className="object-cover brightness-75"
             priority={index === 0}
             quality={95}
           />
