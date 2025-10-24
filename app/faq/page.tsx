@@ -139,17 +139,17 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen relative">
-      <DecorativeBirds />
       <Navigation />
 
-      <main className="relative z-10">
+  <main className="relative z-20">
+        <DecorativeBirds />
         <PageHeader 
           title="FAQ"
           description="Everything you need to know about the UVA Bird Club"
         />
 
         <section className="py-12 px-4">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-6xl relative z-20">
             <div className="grid lg:grid-cols-4 gap-8">
               {/* Sticky Table of Contents Sidebar */}
               <aside className="lg:col-span-1">
@@ -248,7 +248,7 @@ export default function FAQPage() {
 
         {/* Call to Action */}
         <section className="py-20 px-4 bg-muted">
-          <div className="container mx-auto max-w-3xl">
+          <div className="container mx-auto max-w-3xl relative z-20">
             <Card className="text-center shadow-xl">
               <CardHeader>
                 <CardTitle className="font-display text-4xl md:text-5xl mb-4">STILL HAVE QUESTIONS?</CardTitle>

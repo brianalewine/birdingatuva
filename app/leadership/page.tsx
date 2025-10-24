@@ -78,17 +78,17 @@ export default function LeadershipPage() {
 
 	return (
 		<div className="min-h-screen relative">
-			<DecorativeBirds />
 			<Navigation />
 
-      <main className="relative z-10">
+			<main className="relative z-20">
+				<DecorativeBirds />
         <PageHeader 
           title="OUR LEADERSHIP"
           description="Meet the dedicated students leading the UVA Bird Club"
         />
 
 				<section className="py-20 px-4">
-					<div className="container mx-auto max-w-6xl">
+					<div className="container mx-auto max-w-6xl relative z-20">
 						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 							{executives.map((exec, index) => (
 								<Card
@@ -142,7 +142,7 @@ export default function LeadershipPage() {
 				</section>
 
 				<section className="py-20 px-4 bg-gradient-to-b from-muted to-background">
-					<div className="container mx-auto max-w-3xl">
+					<div className="container mx-auto max-w-3xl relative z-20">
 						<Card className="text-center shadow-xl border-2 border-accent/20">
 							<CardHeader>
 								<CardTitle className="font-display text-4xl md:text-5xl mb-4">

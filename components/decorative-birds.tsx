@@ -16,6 +16,8 @@ interface FlyingBird {
   baseVelocity?: number
   // visual scale (fixed per bird)
   scale?: number
+  // flight angle in degrees
+  angle?: number
 }
 
 // Available bird images (fallback)
@@ -129,6 +131,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     const spawnRange = pageHeight - aboutStart - 400 // subtract some padding at bottom
     const topPosition = aboutStart + (Math.random() * spawnRange)
     
+    // Random flight angle between -45 and +45 degrees
+    const flightAngle = (Math.random() * 90) - 45
+    
     const newBird: FlyingBird = {
       id: birdCounterRef.current++,
       bird: randomBird,
@@ -139,6 +144,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
       progress: 0,
       baseVelocity: 1 / (duration * 1000),
       scale: 0.85 + Math.random() * 0.2,
+      angle: flightAngle,
     }
 
     setFlyingBirds((prev) => [...prev, newBird])
@@ -218,13 +224,13 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   return (
     <>
       <div
-        className="fixed inset-0 pointer-events-none z-0 transition-colors duration-1000"
+        className="fixed inset-0 pointer-events-none -z-30 transition-colors duration-1000"
         style={{
           backgroundColor: getBackgroundColor(),
         }}
       />
 
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
         {flyingBirds.map((bird) => {
           // compute x position from progress so updates are continuous and won't jump
           const w = typeof window !== "undefined" ? window.innerWidth : 1200
@@ -258,6 +264,22 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           const scale = (bird as any).scale ?? 0.95
           const opacityTransition = p > 0.85 ? "opacity 200ms ease" : "opacity 700ms ease"
 
+          // Get the flight angle for rotation and trajectory
+          const flightAngle = bird.angle ?? 0
+          
+          // Calculate trajectory based on angle
+          // Positive angle = upward flight, negative = downward
+          const angleInRadians = (flightAngle * Math.PI) / 180
+          const trajectoryY = -Math.tan(angleInRadians) * (bird.progress ?? 0) * (w + 240)
+          
+          // Add sinusoidal vertical motion on top of trajectory
+          // Use progress to create a wave that completes 2-3 cycles across the screen
+          const waveFrequency = 2.5 + Math.sin(bird.id) * 0.5 // slightly vary frequency per bird
+          const waveAmplitude = 30 + Math.cos(bird.id) * 10 // vary amplitude 20-40px per bird
+          const waveOffset = Math.sin(p * Math.PI * 2 * waveFrequency) * waveAmplitude
+          
+          const verticalOffset = trajectoryY + waveOffset
+
           return (
             <div
               key={bird.id}
@@ -267,8 +289,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
                 width: "100px",
                 height: "100px",
                 left: 0,
-                // translateX handles the movement across the screen; scale is fixed per bird
-                transform: `translateX(${x}px) scale(${scale})`,
+                // translateX handles horizontal movement, translateY adds wave motion, rotate adds angle, scale is fixed per bird
+                transform: `translateX(${x}px) translateY(${verticalOffset}px) rotate(${flightAngle}deg) scale(${scale})`,
                 transition: `${opacityTransition}, transform 150ms linear`,
                 // combine creation fade (isVisible) with edge fade
                 opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,

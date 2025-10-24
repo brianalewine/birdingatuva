@@ -18,7 +18,7 @@ export function Navigation() {
   ]
 
   return (
-    <nav className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-lg">
+  <nav className="sticky top-0 z-40 bg-primary text-primary-foreground shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo and Name */}

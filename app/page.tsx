@@ -70,31 +70,31 @@ export default function HomePage() {
   return (
     <div className="min-h-screen relative">
       {/* read flying-birds filenames from public folder and pass into client component */}
-      {(() => {
-        const flyingDir = path.join(process.cwd(), "public/images/flying-birds")
-        let flyingImages: string[] = []
-        try {
-          flyingImages = fs.readdirSync(flyingDir).filter((file) => {
-            const ext = path.extname(file).toLowerCase()
-            const filePath = path.join(flyingDir, file)
-            const isFile = fs.statSync(filePath).isFile()
-            return isFile && [".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(ext) && !file.startsWith('.')
-          })
-        } catch (e) {
-          flyingImages = []
-        }
-
-        return <DecorativeBirds images={flyingImages} target={2} />
-      })()}
       <Navigation />
 
-      <main className="relative z-10">
+  <main className="relative z-20">
+        {(() => {
+          const flyingDir = path.join(process.cwd(), "public/images/flying-birds")
+          let flyingImages: string[] = []
+          try {
+            flyingImages = fs.readdirSync(flyingDir).filter((file) => {
+              const ext = path.extname(file).toLowerCase()
+              const filePath = path.join(flyingDir, file)
+              const isFile = fs.statSync(filePath).isFile()
+              return isFile && [".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(ext) && !file.startsWith('.')
+            })
+          } catch (e) {
+            flyingImages = []
+          }
+
+          return <DecorativeBirds images={flyingImages} />
+        })()}
         <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
           <HeroSlideshow images={heroImages} />
 
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75" />
 
-          <div className="relative z-10 text-center px-4 max-w-5xl mx-auto animate-fade-in-up">
+          <div className="relative z-20 text-center px-4 max-w-5xl mx-auto animate-fade-in-up">
             <div className="mb-8 flex justify-center">
               <div className="relative w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl">
                 <Image
@@ -140,7 +140,7 @@ export default function HomePage() {
 
         {/* About Section */}
         <section className="py-20 px-4">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-6xl relative z-20">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-3">
                 <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
@@ -186,7 +186,7 @@ export default function HomePage() {
         </section>
 
         <section className="py-20 px-4 bg-muted">
-          <div className="container mx-auto max-w-4xl text-center">
+          <div className="container mx-auto max-w-4xl text-center relative z-20">
             <div className="flex justify-center mb-6">
               <Image src="/images/ebird-logo.png" alt="eBird Logo" width={200} height={80} className="object-contain" />
             </div>
@@ -208,7 +208,7 @@ export default function HomePage() {
         </section>
 
         <section id="trips" className="py-20 px-4 scroll-mt-24">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-6xl relative z-20">
             <div className="text-center mb-12">
               <h2 className="font-display text-5xl md:text-6xl font-bold mb-4 text-primary">LOCAL BIRDING TRIPS</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -266,7 +266,7 @@ export default function HomePage() {
         </section>
 
         <section id="join" className="py-20 px-4 bg-gradient-to-b from-muted to-background scroll-mt-24">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-6xl relative z-20">
             <h2 className="font-display text-5xl md:text-6xl font-bold mb-4 text-center text-primary">HOW TO JOIN</h2>
             <p className="text-center text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
               Getting started is easy! Follow these three simple steps to become part of our birding community.
@@ -283,7 +283,7 @@ export default function HomePage() {
                       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-accent to-accent/70 text-white flex items-center justify-center text-4xl font-bold mx-auto shadow-lg">
                         1
                       </div>
-                      <div className="absolute -inset-2 rounded-full bg-accent/20 -z-10 animate-pulse" />
+                      <div className="absolute -inset-2 rounded-full bg-accent/20 z-0 animate-pulse" />
                     </div>
                     <CardTitle className="font-display text-3xl">JOIN OUR GROUPME</CardTitle>
                   </CardHeader>
@@ -401,7 +401,7 @@ export default function HomePage() {
 
         {/* Contact Section */}
         <section className="py-20 px-4">
-          <div className="container mx-auto max-w-4xl">
+          <div className="container mx-auto max-w-4xl relative z-20">
             <h2 className="font-display text-5xl md:text-6xl font-bold mb-12 text-center text-primary">GET IN TOUCH</h2>
 
             <div className="grid md:grid-cols-3 gap-6">
