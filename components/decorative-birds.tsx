@@ -55,8 +55,10 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
 
   // limit concurrent birds and keep spawn frequency independent of how many files exist
-  const MAX_CONCURRENT_BIRDS = 8 // base concurrent birds per viewport (reduced slightly)
-  const SPAWN_RATE_MS = 750 // Slightly slower spawn to reduce total birds a hair
+  // Reduce the base concurrent birds to lower on-screen density.
+  const MAX_CONCURRENT_BIRDS = 3 // base concurrent birds per viewport (further reduced)
+  // Increase spawn interval so new birds appear less frequently
+  const SPAWN_RATE_MS = 1200 // spawn every 1.2s
   // Render all bird images at a fixed pixel size so they appear uniform
   // (increased by 20% per request)
   const BIRD_PIXEL_SIZE = 66
@@ -85,7 +87,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         slowdownIntervalRef.current = null
       }
 
-      // Set timeout to gradually slow down birds after 1.5s of no scroll
+      // Set timeout to gradually slow down birds after 20s of no scroll
+      // (double the wait so birds keep moving longer after user stops scrolling)
       scrollTimeoutRef.current = setTimeout(() => {
         setIsScrolling(false)
         // Gradually reduce speed factor down to MIN_SPEED_FACTOR over ~1.5s
@@ -105,7 +108,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
             }
           }
         }, 120) // Update every 120ms for smooth transition
-      }, 1500)
+      }, 20000)
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })

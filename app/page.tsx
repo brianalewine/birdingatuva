@@ -50,7 +50,7 @@ const trips = [
 	{
 		name: "UVA Grounds & Observatory Hill",
 		description:
-			"Beginner-friendly outings to observe migrants right on campus. Perfect for busy students!",
+			"Beginner-friendly outings to observe birds right on campus. Perfect for busy students!",
 		frequency: "Bi-weekly",
 		location: "Campus birding",
 		image: "/images/local-trips/ohill.png",

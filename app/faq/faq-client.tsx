@@ -210,7 +210,7 @@ export function FAQClient({ birdImages }: FAQClientProps) {
                     placeholder="Search FAQs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 bg-white dark:bg-slate-800 shadow-sm"
                   />
                 </div>
 
