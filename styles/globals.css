@@ -123,3 +123,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 20px;
+  }
+
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .hero-section p {
+    font-size: 1rem;
+  }
+
+  .hero-section .buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-section .buttons button {
+    width: 100%;
+  }
+}
