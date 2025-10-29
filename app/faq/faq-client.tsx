@@ -48,17 +48,17 @@ const faqCategories = [
       {
         question: "When and where do you meet?",
         answer:
-          "We hold regular meetings during the academic year, typically bi-weekly. Meeting times and locations are announced on our Instagram @uva_birdclub. Most meetings are held on Grounds in convenient locations for students.",
+          "We hold two meetings each month, with one social event and one educational meeting. Meeting times and locations are announced on our Instagram, GroupMe, and email list. Most meetings are held on Grounds in convenient locations for students.",
       },
       {
-        question: "What happens at meetings?",
+        question: "What happens at meetings or socials?",
         answer:
-          "Our meetings include trip planning, bird identification workshops, guest speakers from local birding organizations, and social time to connect with fellow bird enthusiasts. We also discuss conservation efforts and citizen science projects.",
+          "Our educational meetings include bird identification workshops and discussions about conservation efforts and citizen science projects. Socials are more relaxed with fun activities like bird games or quizzes, movies, and more!",
       },
       {
         question: "How often do you go on birding trips?",
         answer:
-          "We organize birding trips weekly to bi-weekly, depending on the season and interest. Trips range from short walks on Grounds to longer excursions to places like Ivy Creek and Shenandoah National Park.",
+          "We organize birding trips weekly to bi-weekly, depending on the season and interest. Trips include short walks on Grounds, local drives to nearby parks, and further trips to destinations like Shenandoah National Park or shorebird areas.",
       },
       {
         question: "Can I suggest a birding location?",
@@ -73,22 +73,17 @@ const faqCategories = [
       {
         question: "How long are typical trips?",
         answer:
-          "Most local trips last 2-3 hours, perfect for fitting into a student schedule. Longer trips to Shenandoah or other destinations might be half-day or full-day excursions on weekends.",
+          "Most local trips last 2-3 hours, which works well with a student schedule. Longer trips to Shenandoah or other destinations might be half-day or full-day excursions on weekends.",
       },
       {
         question: "Do I need a car to participate?",
         answer:
-          "Not necessarily! Many of our trips are to locations accessible by walking or biking from Grounds, like Observatory Hill and the Rivanna Trail. For farther locations, we coordinate carpools so everyone can participate.",
-      },
-      {
-        question: "What's the best time of year for birding?",
-        answer:
-          "Every season offers unique birding opportunities! Spring and fall migration (April-May and September-October) are especially exciting for seeing warblers and other migrants. Winter is great for waterfowl, and summer brings breeding songbirds.",
+          "Nope! For local trips (typically 15-20 minutes away), we coordinate carpools. If you do have a car and can drive, your club dues cover the cost of gas for local trips, so you'll be reimbursed. Everyone is welcome to join trips whether or not they have a car!",
       },
       {
         question: "What if I can't identify birds?",
         answer:
-          "That's what we're here for! Our experienced members love helping with bird identification. We use field marks, calls, and behavior to identify species together. It's all part of the learning experience!",
+          "Don't worry about it! We all started somewhere, and there are always experienced members around to help. We'll point out field marks, listen to calls, and watch behavior. Figuring out what bird you're looking at is half the fun!",
       },
       {
         question: "Will I get back in time for classes?",
@@ -103,22 +98,17 @@ const faqCategories = [
       {
         question: "Is there a membership fee?",
         answer:
-          "No! The UVA Bird Club is completely free to join and participate in. We're funded through UVA student activities and occasionally through small grants for special events.",
+          "Yes, semester dues are $10, which you can pay with cash or Venmo at or before your first trip. Your dues cover gas reimbursement for drivers on local trips, so everyone can participate. Additional fees may apply for longer-distance trips to cover transportation costs.",
       },
       {
-        question: "Can graduate students join?",
+        question: "Who can join?",
         answer:
-          "Yes! We welcome all UVA students - undergraduates, graduate students, and even faculty or staff who are interested in birding. The more the merrier!",
+          "Anyone from the UVA community! We welcome undergrads, grad students, faculty, and staff. If you're interested in birds, you're welcome to join us.",
       },
       {
         question: "Do you participate in citizen science?",
         answer:
-          "Yes! We regularly contribute to projects like eBird, the Great Backyard Bird Count, and Christmas Bird Counts. These efforts help scientists track bird populations and migration patterns.",
-      },
-      {
-        question: "How can I get more involved?",
-        answer:
-          "Beyond attending trips and meetings, you can help lead trips, give presentations, assist with social media, or run for a leadership position. We hold elections each spring. Contact our leadership team to learn more!",
+          "Yes! We contribute to projects like eBird, the Great Backyard Bird Count, and Christmas Bird Counts. These efforts help scientists track bird populations and migration patterns.",
       },
     ],
   },
