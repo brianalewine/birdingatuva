@@ -249,7 +249,7 @@ export default function HomePage() {
 								</p>
 								<Button size="lg" asChild>
 									<a
-										href="https://ebird.org"
+										href="https://ebird.org/profile/ODM4NzkyOQ"
 										target="_blank"
 										rel="noopener noreferrer"
 									>
