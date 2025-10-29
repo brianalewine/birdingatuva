@@ -37,7 +37,7 @@ export function Navigation() {
                 Birding at UVA
               </span>
               <span className="font-sans text-xs md:text-sm font-light italic -mt-1">
-                Hoo's watching Hoos
+                Hoo's Watching Hoo?
               </span>
             </div>
           </Link>
