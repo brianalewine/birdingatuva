@@ -7,6 +7,10 @@ interface HeroSlideshowProps {
   images: string[]
 }
 
+// Slideshow timing configuration - adjust these values to change the timing
+const SLIDE_INTERVAL_MS = 4000  // Time between slide changes (4 seconds)
+const FADE_DURATION_MS = 2000   // Fade transition duration (1.5 seconds)
+
 export function HeroSlideshow({ images }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -22,11 +26,11 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
     const interval = setInterval(() => {
       setIsTransitioning(true)
       
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % shuffledImages.length)
-        setIsTransitioning(false)
-      }, 1000) // 1 second transition
-    }, 10000) // 10 seconds per image
+        setTimeout(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % shuffledImages.length)
+          setIsTransitioning(false)
+        }, FADE_DURATION_MS)
+    }, SLIDE_INTERVAL_MS)
 
     return () => clearInterval(interval)
   }, [shuffledImages.length])
@@ -42,11 +46,12 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
       {shuffledImages.map((imageName, index) => (
         <div
           key={imageName}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
+          className={`absolute inset-0 transition-opacity ${
             index === currentIndex
               ? "opacity-100"
               : "opacity-0"
           }`}
+          style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
         >
           <Image
             src={`/images/hero-backgrounds/${imageName}`}
