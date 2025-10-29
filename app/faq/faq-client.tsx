@@ -16,14 +16,19 @@ const faqCategories = [
     category: "Getting Started",
     faqs: [
       {
-        question: "Do I need birding knowledge to join?",
-        answer:
-          "Not at all! We welcome birders of all experience levels, from complete beginners to seasoned experts. Our trips and meetings are designed to be inclusive and educational for everyone.",
-      },
-      {
         question: "How do I join the club?",
         answer:
           "Simply attend one of our meetings or trips! Semester dues are $10, which you can pay with cash or Venmo at or before your first trip. Follow us on Instagram or join our GroupMe (links on the home page) for event announcements and trip details.",
+      },
+      {
+        question: "Is there a membership fee?",
+        answer:
+          "Yes, semester dues are $10, which you can pay with cash or Venmo at or before your first trip. Your dues cover gas reimbursement for drivers on local trips, so everyone can participate. Additional fees may apply for longer-distance trips to cover transportation costs.",
+      },
+      {
+        question: "Do I need birding knowledge to join?",
+        answer:
+          "Not at all! We welcome birders of all experience levels, from complete beginners to seasoned experts. Our trips and meetings are designed to be inclusive and educational for everyone.",
       },
       {
         question: "Do I need binoculars?",
@@ -36,9 +41,9 @@ const faqCategories = [
           "Bring binoculars (if you have them), a field guide (optional, we'll help with ID), water, comfortable walking shoes, and weather-appropriate clothing. We highly recommend downloading the Merlin Bird ID app and eBird app - both have great record-keeping features where you can track what birds you see!",
       },
       {
-        question: "Do I have to pay before I go on a trip?",
+        question: "Who can join?",
         answer:
-          "No need to pay in advance! You can pay your semester dues with cash or Venmo when you go on your first trip, or any time before. We make it easy and flexible for new members to get started.",
+          "Anyone from the UVA community! We welcome undergrads, grad students, faculty, and staff. If you're interested in birds, you're welcome to join us.",
       },
     ],
   },
@@ -96,16 +101,6 @@ const faqCategories = [
     category: "About the Club",
     faqs: [
       {
-        question: "Is there a membership fee?",
-        answer:
-          "Yes, semester dues are $10, which you can pay with cash or Venmo at or before your first trip. Your dues cover gas reimbursement for drivers on local trips, so everyone can participate. Additional fees may apply for longer-distance trips to cover transportation costs.",
-      },
-      {
-        question: "Who can join?",
-        answer:
-          "Anyone from the UVA community! We welcome undergrads, grad students, faculty, and staff. If you're interested in birds, you're welcome to join us.",
-      },
-      {
         question: "Do you participate in citizen science?",
         answer:
           "Yes! We contribute to projects like eBird, the Great Backyard Bird Count, and Christmas Bird Counts. These efforts help scientists track bird populations and migration patterns.",
@@ -154,7 +149,7 @@ export function FAQClient({ birdImages }: FAQClientProps) {
         <DecorativeBirds images={birdImages} />
         <PageHeader 
           title="FAQ"
-          description="Everything you need to know about the UVA Bird Club"
+          description="Everything you need to know about Birding at UVA"
         />
 
         <section className="py-12 px-4">
