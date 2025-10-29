@@ -13,7 +13,7 @@ export function Navigation() {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/leadership", label: "Leadership" },
+    //{ href: "/leadership", label: "Leadership" },
     { href: "/faq", label: "FAQ" },
   ]
 
