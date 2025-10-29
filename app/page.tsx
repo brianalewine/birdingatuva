@@ -381,7 +381,7 @@ export default function HomePage() {
 											asChild
 										>
 											<a
-												href="#"
+												href="https://groupme.com/join_group/109995890/QWsltHtC"
 												target="_blank"
 												rel="noopener noreferrer"
 											>
@@ -418,11 +418,11 @@ export default function HomePage() {
 											asChild
 										>
 											<a
-												href="https://instagram.com/uvabirdclub"
+												href="https://instagram.com/birdingatuva"
 												target="_blank"
 												rel="noopener noreferrer"
 											>
-												@uvabirdclub
+												@birdingatuva
 											</a>
 										</Button>
 									</CardContent>
@@ -476,20 +476,25 @@ export default function HomePage() {
 										<div className="flex items-start gap-3">
 											<Calendar className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
 											<p className="text-foreground">
-												Biweekly education seminars on bird ID and sustainable
-												practices
+												Monthly social events with food and fellow birders
 											</p>
 										</div>
 										<div className="flex items-start gap-3">
 											<Calendar className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
 											<p className="text-foreground">
-												Meetings with trip announcements and food provided
+												Monthly educational meetings on topics such as bird ID and sustainable birding practices
 											</p>
 										</div>
 										<div className="flex items-start gap-3">
 											<MapPin className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
 											<p className="text-foreground">
 												Local trips in the Charlottesville area
+											</p>
+										</div>
+										<div className="flex items-start gap-3">
+											<MapPin className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
+											<p className="text-foreground">
+												Long-distance trips to birding destinations beyond Charlottesville
 											</p>
 										</div>
 									</div>
@@ -503,7 +508,7 @@ export default function HomePage() {
 													Semester Dues
 												</p>
 												<p className="font-display font-bold text-5xl text-accent">
-													$7
+													$10
 												</p>
 											</div>
 											<div className="space-y-3 text-sm">
@@ -516,7 +521,7 @@ export default function HomePage() {
 												<div className="flex items-start gap-2">
 													<span className="text-accent mt-0.5">✓</span>
 													<p className="text-foreground">
-														Educational seminars and meetings with food
+														Educational meetings and social events with food
 													</p>
 												</div>
 												<p className="pt-4 text-xs text-muted-foreground italic">
@@ -547,10 +552,10 @@ export default function HomePage() {
 								</CardHeader>
 								<CardContent>
 									<a
-										href="mailto:uvabirdclub@virginia.edu"
+										href="mailto:birdingatuva@gmail.com"
 										className="text-accent hover:underline break-all"
 									>
-										uvabirdclub@virginia.edu
+										birdingatuva@gmail.com
 									</a>
 								</CardContent>
 							</Card>
@@ -564,12 +569,12 @@ export default function HomePage() {
 								</CardHeader>
 								<CardContent>
 									<a
-										href="https://instagram.com/uvabirdclub"
+										href="https://instagram.com/birdingatuva"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="block text-accent hover:underline"
 									>
-										@uvabirdclub
+										@birdingatuva
 									</a>
 								</CardContent>
 							</Card>
