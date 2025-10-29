@@ -42,7 +42,7 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
   }
 
   return (
-    <div className="absolute inset-0 z-10">
+    <div className="absolute inset-0 z-10 bg-blue-900">
       {shuffledImages.map((imageName, index) => (
         <div
           key={imageName}
