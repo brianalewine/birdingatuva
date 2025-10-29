@@ -87,8 +87,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
         slowdownIntervalRef.current = null
       }
 
-      // Set timeout to gradually slow down birds after 20s of no scroll
-      // (double the wait so birds keep moving longer after user stops scrolling)
+      // Set timeout to gradually slow down birds after 7s of no scroll
       scrollTimeoutRef.current = setTimeout(() => {
         setIsScrolling(false)
         // Gradually reduce speed factor down to MIN_SPEED_FACTOR over ~1.5s
@@ -108,7 +107,7 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
             }
           }
         }, 120) // Update every 120ms for smooth transition
-      }, 20000)
+      }, 7000)
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })
