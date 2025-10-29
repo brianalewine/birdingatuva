@@ -14,7 +14,6 @@ const FADE_DURATION_MS = 2000   // Fade transition duration (1.5 seconds)
 export function HeroSlideshow({ images }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0]))
   
   // Randomize images order on component mount
   const shuffledImages = useMemo(() => {
@@ -28,12 +27,7 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
       setIsTransitioning(true)
       
         setTimeout(() => {
-          setCurrentIndex((prevIndex) => {
-            const nextIndex = (prevIndex + 1) % shuffledImages.length
-            // Preload next image and the one after
-            setLoadedImages(prev => new Set([...prev, nextIndex, (nextIndex + 1) % shuffledImages.length]))
-            return nextIndex
-          })
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % shuffledImages.length)
           setIsTransitioning(false)
         }, FADE_DURATION_MS)
     }, SLIDE_INTERVAL_MS)
@@ -48,11 +42,12 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
   }
 
   return (
-    <div className="absolute inset-0 z-10 bg-blue-900">
+    <div className="absolute inset-0 z-10" style={{ backgroundColor: 'hsla(36, 7%, 44%, 1.00)' }}>
       {shuffledImages.map((imageName, index) => {
-        // Only render images that are loaded or about to be shown
-        const shouldLoad = loadedImages.has(index) || index === 0
-        if (!shouldLoad) return null
+        // Only render current, previous, and next images to keep DOM lightweight
+        const prevIndex = (currentIndex - 1 + shuffledImages.length) % shuffledImages.length
+        const nextIndex = (currentIndex + 1) % shuffledImages.length
+        const shouldRender = index === currentIndex || index === prevIndex || index === nextIndex
         
         return (
           <div
@@ -62,18 +57,25 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
                 ? "opacity-100"
                 : "opacity-0"
             }`}
-            style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
+            style={{ 
+              transitionDuration: `${FADE_DURATION_MS}ms`,
+              // Use pointer-events and visibility to hide but keep critical images in DOM
+              pointerEvents: index === currentIndex ? 'auto' : 'none',
+              display: shouldRender ? 'block' : 'none'
+            }}
           >
-            <Image
-              src={`/images/hero-backgrounds/${imageName}`}
-              alt=""
-              fill
-              className="object-cover brightness-75"
-              priority={index === 0}
-              quality={85}
-              sizes="100vw"
-              loading={index === 0 ? "eager" : "lazy"}
-            />
+            {shouldRender && (
+              <Image
+                src={`/images/hero-backgrounds/${imageName}`}
+                alt=""
+                fill
+                className="object-cover brightness-75"
+                priority={index === 0}
+                quality={85}
+                sizes="100vw"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            )}
           </div>
         )
       })}
