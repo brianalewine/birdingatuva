@@ -544,7 +544,7 @@ export default function HomePage() {
 							GET IN TOUCH
 						</h2>
 
-						<div className="grid md:grid-cols-3 gap-6">
+						<div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
 							<Card className="text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
 								<CardHeader>
 									<Mail className="w-12 h-12 mx-auto mb-4 text-accent" />
@@ -576,29 +576,6 @@ export default function HomePage() {
 									>
 										@birdingatuva
 									</a>
-								</CardContent>
-							</Card>
-
-							<Card className="text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-								<CardHeader>
-									<Clock className="w-12 h-12 mx-auto mb-4 text-accent" />
-									<CardTitle className="font-display text-xl">
-										MEETINGS
-									</CardTitle>
-								</CardHeader>
-								<CardContent className="space-y-2 text-sm">
-									<p className="flex items-center justify-center gap-2">
-										<MapPin className="w-4 h-4" />
-										SAB Room 204
-									</p>
-									<p className="flex items-center justify-center gap-2">
-										<Calendar className="w-4 h-4" />
-										Third Thursday
-									</p>
-									<p className="flex items-center justify-center gap-2">
-										<Clock className="w-4 h-4" />
-										7:00 PM
-									</p>
 								</CardContent>
 							</Card>
 						</div>
