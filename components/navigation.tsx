@@ -30,9 +30,14 @@ export function Navigation() {
               height={50}
               className="rounded-full"
             />
-            <span className="font-sans text-xl md:text-2xl font-medium tracking-wider hidden sm:block">
-              {"Hoo's Watching Hoos"}
-            </span>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-sans text-xl md:text-2xl font-semibold tracking-wide">
+                Birding at UVA
+              </span>
+              <span className="font-sans text-xs md:text-sm font-light italic -mt-1">
+                Hoo's watching Hoos
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
