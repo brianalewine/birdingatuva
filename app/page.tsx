@@ -111,6 +111,8 @@ export default function HomePage() {
 									fill
 									className="object-contain filter drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
 									priority
+									quality={90}
+									sizes="(max-width: 768px) 160px, 192px"
 								/>
 							</div>
 						</div>
@@ -150,16 +152,19 @@ export default function HomePage() {
 				<section className="py-20 px-4">
 					<div className="container mx-auto max-w-6xl relative z-20">
 						<div className="grid md:grid-cols-2 gap-12 items-center">
-							<div className="space-y-3">
-								<div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-									<Image
-										src="/images/about-us.jpeg"
-										alt="Club members during bird banding activity"
-										fill
-										className="object-cover"
-									/>
-								</div>
-								<p className="text-sm text-center text-muted-foreground italic">
+						<div className="space-y-3">
+							<div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+								<Image
+									src="/images/about-us.jpeg"
+									alt="Club members during bird banding activity"
+									fill
+									className="object-cover"
+									quality={85}
+									sizes="(max-width: 768px) 100vw, 50vw"
+									loading="lazy"
+								/>
+							</div>
+							<p className="text-sm text-center text-muted-foreground italic">
 									Club members after capturing birds in a mist net for banding and
 									release
 								</p>
@@ -235,6 +240,9 @@ export default function HomePage() {
 								width={200}
 								height={80}
 								className="object-contain"
+								quality={85}
+								sizes="200px"
+								loading="lazy"
 							/>
 						</div>
 						<h2 className="font-display text-5xl md:text-6xl font-bold mb-6 text-primary">
@@ -285,6 +293,9 @@ export default function HomePage() {
 											alt={trip.name}
 											fill
 											className="object-cover group-hover:scale-110 transition-transform duration-500"
+											quality={85}
+											sizes="(max-width: 768px) 100vw, 50vw"
+											loading="lazy"
 										/>
 										<Badge
 											className="absolute top-4 right-4 shadow-lg font-semibold text-sm"

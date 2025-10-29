@@ -14,6 +14,7 @@ const FADE_DURATION_MS = 2000   // Fade transition duration (1.5 seconds)
 export function HeroSlideshow({ images }: HeroSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0]))
   
   // Randomize images order on component mount
   const shuffledImages = useMemo(() => {
@@ -27,7 +28,12 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
       setIsTransitioning(true)
       
         setTimeout(() => {
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % shuffledImages.length)
+          setCurrentIndex((prevIndex) => {
+            const nextIndex = (prevIndex + 1) % shuffledImages.length
+            // Preload next image and the one after
+            setLoadedImages(prev => new Set([...prev, nextIndex, (nextIndex + 1) % shuffledImages.length]))
+            return nextIndex
+          })
           setIsTransitioning(false)
         }, FADE_DURATION_MS)
     }, SLIDE_INTERVAL_MS)
@@ -43,26 +49,34 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
 
   return (
     <div className="absolute inset-0 z-10 bg-blue-900">
-      {shuffledImages.map((imageName, index) => (
-        <div
-          key={imageName}
-          className={`absolute inset-0 transition-opacity ${
-            index === currentIndex
-              ? "opacity-100"
-              : "opacity-0"
-          }`}
-          style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
-        >
-          <Image
-            src={`/images/hero-backgrounds/${imageName}`}
-            alt=""
-            fill
-            className="object-cover brightness-75"
-            priority={index === 0}
-            quality={95}
-          />
-        </div>
-      ))}
+      {shuffledImages.map((imageName, index) => {
+        // Only render images that are loaded or about to be shown
+        const shouldLoad = loadedImages.has(index) || index === 0
+        if (!shouldLoad) return null
+        
+        return (
+          <div
+            key={imageName}
+            className={`absolute inset-0 transition-opacity ${
+              index === currentIndex
+                ? "opacity-100"
+                : "opacity-0"
+            }`}
+            style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
+          >
+            <Image
+              src={`/images/hero-backgrounds/${imageName}`}
+              alt=""
+              fill
+              className="object-cover brightness-75"
+              priority={index === 0}
+              quality={85}
+              sizes="100vw"
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          </div>
+        )
+      })}
     </div>
   )
 }

@@ -29,6 +29,8 @@ export function Navigation() {
               width={50}
               height={50}
               className="rounded-full"
+              quality={90}
+              sizes="50px"
             />
             <div className="hidden sm:flex flex-col">
               <span className="font-sans text-xl md:text-2xl font-semibold tracking-wide">

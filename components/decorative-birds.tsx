@@ -538,6 +538,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
               width={BIRD_PIXEL_SIZE}
               height={BIRD_PIXEL_SIZE}
               className="object-contain"
+              quality={80}
+              sizes={`${BIRD_PIXEL_SIZE}px`}
+              loading="lazy"
               style={{
                 filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))",
                 // All birds face right. For left-facing flight:

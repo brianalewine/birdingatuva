@@ -8,9 +8,12 @@ interface SafeImageProps {
   alt?: string
   className?: string
   fill?: boolean
+  quality?: number
+  sizes?: string
+  loading?: "lazy" | "eager"
 }
 
-export function SafeImage({ src, alt = "", className, fill }: SafeImageProps) {
+export function SafeImage({ src, alt = "", className, fill, quality = 85, sizes, loading = "lazy" }: SafeImageProps) {
   const [errored, setErrored] = useState(false)
 
   if (errored) {
@@ -23,14 +26,15 @@ export function SafeImage({ src, alt = "", className, fill }: SafeImageProps) {
   }
 
   return (
-    // @ts-ignore - next/image accepts onError but types can be finicky with our wrapper
     <Image
       src={src}
       alt={alt}
       fill={fill}
       className={className}
+      quality={quality}
+      sizes={sizes || "(max-width: 768px) 100vw, 33vw"}
+      loading={loading}
       onError={() => setErrored(true)}
-      unoptimized
     />
   )
 }
