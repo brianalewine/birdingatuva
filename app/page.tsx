@@ -16,7 +16,7 @@ const trips = [
 		name: "Ivy Creek Natural Area",
 		description:
 			"Varied habitats perfect for spotting warblers, woodpeckers, and waterfowl throughout the seasons.",
-		frequency: "Monthly",
+		frequency: "Weekly",
 		location: "215-acre preserve",
 		image: "/images/local-trips/ivy-creek.png",
 		allTrailsUrl:
