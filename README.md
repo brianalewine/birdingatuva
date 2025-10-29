@@ -1,5 +1,4 @@
-# UVA Bird Club Website
-# UVA Bird Club Website
+# Birding at UVA Website
 
 *Automatically synced with your [v0.app](https://v0.app) deployments*
 

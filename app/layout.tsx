@@ -23,9 +23,11 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Hoo's Watching Hoos - UVA Bird Club",
+  title: "Birding at UVA",
   description: "University of Virginia Birding Club - Join us for birding trips, education, and community",
-  generator: "v0.app",
+  icons: {
+    icon: "/images/club-logo.png",
+  },
 }
 
 export default function RootLayout({

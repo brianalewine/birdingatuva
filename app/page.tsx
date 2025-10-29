@@ -107,7 +107,7 @@ export default function HomePage() {
 							<div className="relative w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl">
 								<Image
 									src="/images/club-logo.png"
-									alt="UVA Bird Club Logo"
+									alt="Birding at UVA Logo"
 									fill
 									className="object-contain filter drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
 									priority

@@ -187,7 +187,7 @@ export function FAQClient({ birdImages }: FAQClientProps) {
                           Can't find what you're looking for? Reach out to us!
                         </p>
                         <Button asChild className="w-full">
-                          <Link href="mailto:contact@uvabirdclub.org">Contact Us</Link>
+                          <Link href="mailto:birdingatuva@gmail.com">Contact Us</Link>
                         </Button>
                       </CardContent>
                     </Card>
@@ -272,7 +272,7 @@ export function FAQClient({ birdImages }: FAQClientProps) {
                         Can't find what you're looking for? Reach out to us!
                       </p>
                       <Button asChild className="w-full">
-                        <Link href="mailto:contact@uvabirdclub.org">Contact Us</Link>
+                        <Link href="mailto:birdingatuva@gmail.com">Contact Us</Link>
                       </Button>
                     </CardContent>
                   </Card>
