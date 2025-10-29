@@ -121,7 +121,7 @@ export default function HomePage() {
 							BIRDING AT UVA
 						</h1>
 						<p className="text-2xl md:text-3xl text-white mb-4 font-light italic tracking-wide [text-shadow:_0_3px_12px_rgb(0_0_0_/_80%),_0_1px_4px_rgb(0_0_0_/_70%)]">
-							Hoo's watching Hoos
+							Hoo's Watching Hoo?
 						</p>
 						<p className="text-lg md:text-xl text-white/95 mb-12 max-w-2xl mx-auto leading-relaxed [text-shadow:_0_3px_12px_rgb(0_0_0_/_80%),_0_1px_4px_rgb(0_0_0_/_70%)]">
 							Join us in exploring the diverse birdlife of Central Virginia through
