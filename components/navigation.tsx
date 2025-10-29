@@ -32,8 +32,8 @@ export function Navigation() {
               quality={90}
               sizes="50px"
             />
-            <div className="hidden sm:flex flex-col">
-              <span className="font-sans text-xl md:text-2xl font-semibold tracking-wide">
+            <div className="flex flex-col">
+              <span className="font-sans text-lg sm:text-xl md:text-2xl font-semibold tracking-wide">
                 Birding at UVA
               </span>
               <span className="font-sans text-xs md:text-sm font-light italic -mt-1">
