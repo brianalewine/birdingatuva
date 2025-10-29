@@ -23,17 +23,22 @@ const faqCategories = [
       {
         question: "How do I join the club?",
         answer:
-          "Simply attend one of our meetings or trips! We don't have formal membership requirements. Follow us on Instagram @uva_birdclub for event announcements and trip details.",
+          "Simply attend one of our meetings or trips! Semester dues are $10, which you can pay with cash or Venmo at or before your first trip. Follow us on Instagram or join our GroupMe (links on the home page) for event announcements and trip details.",
       },
       {
         question: "Do I need binoculars?",
         answer:
-          "While having your own binoculars is helpful, we have a few pairs available to borrow during trips for beginners who are just getting started.",
+          "While having your own binoculars is helpful, we have a few pairs available to borrow during trips for beginners who are just getting started. Even without binoculars, you can bird using the Merlin Bird ID app, which has photo and audio recognition features to help identify birds!",
       },
       {
         question: "What should I bring on a birding trip?",
         answer:
-          "Bring binoculars (if you have them), a field guide (optional, we'll help with ID), water, comfortable walking shoes, and weather-appropriate clothing. A notebook or birding app is also useful for keeping track of species!",
+          "Bring binoculars (if you have them), a field guide (optional, we'll help with ID), water, comfortable walking shoes, and weather-appropriate clothing. We highly recommend downloading the Merlin Bird ID app and eBird app - both have great record-keeping features where you can track what birds you see!",
+      },
+      {
+        question: "Do I have to pay before I go on a trip?",
+        answer:
+          "No need to pay in advance! You can pay your semester dues with cash or Venmo when you go on your first trip, or any time before. We make it easy and flexible for new members to get started.",
       },
     ],
   },
@@ -84,6 +89,11 @@ const faqCategories = [
         question: "What if I can't identify birds?",
         answer:
           "That's what we're here for! Our experienced members love helping with bird identification. We use field marks, calls, and behavior to identify species together. It's all part of the learning experience!",
+      },
+      {
+        question: "Will I get back in time for classes?",
+        answer:
+          "Yes! Local morning trips are scheduled so that most students can return to Grounds in time for their classes. If there's interest, we can also organize alternative trips at non-morning times to accommodate different schedules.",
       },
     ],
   },
