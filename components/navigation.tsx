@@ -19,10 +19,10 @@ export function Navigation() {
 
   return (
   <nav className="sticky top-0 z-40 bg-primary text-primary-foreground shadow-lg">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+  <div className="container mx-auto px-4 md:pl-6 md:pr-4">
+        <div className="flex items-center justify-between h-16">
           {/* Logo and Name */}
-          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity md:-ml-12">
             <Image
               src="/images/club-logo.png"
               alt="Birding at UVA Logo"
@@ -43,7 +43,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-1 md:ml-auto">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -63,10 +63,16 @@ export function Navigation() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden text-primary-foreground"
+            className="md:hidden text-primary-foreground p-0"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X /> : <Menu />}
+            {/* Force larger icon size with explicit w/h so the nav bar height stays the same */}
+            {mobileMenuOpen ? (
+              // add a class containing "size-" so the Button's svg override selector won't apply
+              <X className="size-7 w-7 h-7" />
+            ) : (
+              <Menu className="size-7 w-7 h-7" />
+            )}
           </Button>
         </div>
 
