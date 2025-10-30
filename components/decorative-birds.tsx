@@ -70,9 +70,9 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   // Render all bird images at a fixed pixel size so they appear uniform
   // (increased by 20% per request)
   const BIRD_PIXEL_SIZE = 66
-  // Mobile birds are 25% smaller
+  // Mobile birds are 35% smaller (25% + additional 10%)
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-  const MOBILE_BIRD_SIZE = Math.round(BIRD_PIXEL_SIZE * 0.75)
+  const MOBILE_BIRD_SIZE = Math.round(BIRD_PIXEL_SIZE * 0.65)
   const effectiveBirdSize = isMobile ? MOBILE_BIRD_SIZE : BIRD_PIXEL_SIZE
 
   useEffect(() => {
@@ -155,7 +155,10 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     if (usedBirdsRef.current.size >= birdImageList.length) usedBirdsRef.current.clear()
 
     // Fixed duration for consistent flight speed across all birds
-    const duration = 10.5
+    // Mobile birds are 20% slower (1.2x duration)
+    const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 768
+    const baseDuration = 10.5
+    const duration = isMobileDevice ? baseDuration * 1.2 : baseDuration
     
     // build a random bezier arc path with start/end points on any edge of the screen
     const w = typeof window !== "undefined" ? window.innerWidth : 1200
