@@ -350,66 +350,79 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
 
   // rAF loop to drive bird positions based on progress so changing speed doesn't cause jumps
   useEffect(() => {
+    // Detect mobile once at setup time
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    let frameCount = 0
+    
     const loop = (t: number) => {
       if (!lastFrameRef.current) lastFrameRef.current = t
       const delta = t - (lastFrameRef.current || t)
       lastFrameRef.current = t
 
+      // On mobile, only update every other frame to reduce jitter
+      // On desktop, always update every frame
+      frameCount++
+      const shouldUpdate = !isMobile || frameCount % 2 === 0
+
+      if (shouldUpdate) {
         setFlyingBirds((prev) => {
-        if (prev.length === 0) return prev
-        const w = typeof window !== "undefined" ? window.innerWidth : 1200
-        const h = typeof window !== "undefined" ? window.innerHeight : 800
-        
-        const updated = prev.map((b) => {
-          const baseV = b.baseVelocity ?? (1 / (b.speed * 1000))
-          // effective velocity scales with birdSpeed; when we've slowed to MIN and not scrolling, pause fully
-          const effectiveV = !isScrolling && birdSpeed <= MIN_SPEED_FACTOR + 0.001 ? 0 : baseV * birdSpeed
-          const added = effectiveV * delta
-          // Don't clamp progress - let birds continue moving beyond their path end point
-          const newProgress = (b.progress ?? 0) + added
-          return { ...b, progress: newProgress }
+          if (prev.length === 0) return prev
+          const w = typeof window !== "undefined" ? window.innerWidth : 1200
+          const h = typeof window !== "undefined" ? window.innerHeight : 800
+          
+          const updated = prev.map((b) => {
+            const baseV = b.baseVelocity ?? (1 / (b.speed * 1000))
+            // effective velocity scales with birdSpeed; when we've slowed to MIN and not scrolling, pause fully
+            const effectiveV = !isScrolling && birdSpeed <= MIN_SPEED_FACTOR + 0.001 ? 0 : baseV * birdSpeed
+            // On mobile with frame skipping, double the delta to compensate
+            const actualDelta = isMobile ? delta * 2 : delta
+            const added = effectiveV * actualDelta
+            // Don't clamp progress - let birds continue moving beyond their path end point
+            const newProgress = (b.progress ?? 0) + added
+            return { ...b, progress: newProgress }
+          })
+
+          // Remove birds only when they're definitely off-screen
+          // Compute a conservative on-screen position for each bird and only
+          // remove it once it's both past a progress threshold and off the viewport
+          return updated.filter((b) => {
+            const progress = b.progress ?? 0
+            // If the bird hasn't passed the basic endpoint, keep it
+            if (progress < 1.2) return true
+
+            // Approximate its current x position (same logic as render):
+            const startX = b.startX ?? -120
+            const startY = b.startY ?? 200
+            const cpX = b.cpX ?? (w / 2)
+            const cpY = b.cpY ?? 300
+            const endX = b.endX ?? (w + 120)
+            const endY = b.endY ?? 200
+            const rawProgress = progress
+
+            let xPos: number
+            if (rawProgress <= 1) {
+              const p = rawProgress
+              xPos = ((1 - p) * (1 - p) * startX) + (2 * (1 - p) * p * cpX) + (p * p * endX)
+            } else {
+              // continue along endpoint tangent
+              const tangentX = 2 * (endX - cpX)
+              const tangentY = 2 * (endY - cpY)
+              const mag = Math.sqrt(tangentX * tangentX + tangentY * tangentY) || 1
+              const nx = tangentX / mag
+              const extra = (rawProgress - 1) * 800
+              xPos = endX + nx * extra
+            }
+
+            // Remove only once bird is well off-screen horizontally
+            const OFFSCREEN_MARGIN = 160
+            if (xPos < -120 - OFFSCREEN_MARGIN) return false
+            if (xPos > w + 120 + OFFSCREEN_MARGIN) return false
+
+            // If still within that range, keep it so it can fade/move out
+            return true
+          })
         })
-
-        // Remove birds only when they're definitely off-screen
-        // Compute a conservative on-screen position for each bird and only
-        // remove it once it's both past a progress threshold and off the viewport
-        return updated.filter((b) => {
-          const progress = b.progress ?? 0
-          // If the bird hasn't passed the basic endpoint, keep it
-          if (progress < 1.2) return true
-
-          // Approximate its current x position (same logic as render):
-          const startX = b.startX ?? -120
-          const startY = b.startY ?? 200
-          const cpX = b.cpX ?? (w / 2)
-          const cpY = b.cpY ?? 300
-          const endX = b.endX ?? (w + 120)
-          const endY = b.endY ?? 200
-          const rawProgress = progress
-
-          let xPos: number
-          if (rawProgress <= 1) {
-            const p = rawProgress
-            xPos = ((1 - p) * (1 - p) * startX) + (2 * (1 - p) * p * cpX) + (p * p * endX)
-          } else {
-            // continue along endpoint tangent
-            const tangentX = 2 * (endX - cpX)
-            const tangentY = 2 * (endY - cpY)
-            const mag = Math.sqrt(tangentX * tangentX + tangentY * tangentY) || 1
-            const nx = tangentX / mag
-            const extra = (rawProgress - 1) * 800
-            xPos = endX + nx * extra
-          }
-
-          // Remove only once bird is well off-screen horizontally
-          const OFFSCREEN_MARGIN = 160
-          if (xPos < -120 - OFFSCREEN_MARGIN) return false
-          if (xPos > w + 120 + OFFSCREEN_MARGIN) return false
-
-          // If still within that range, keep it so it can fade/move out
-          return true
-        })
-      })
+      }
 
       rafRef.current = requestAnimationFrame(loop)
     }
@@ -523,13 +536,15 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
                 width: `${BIRD_PIXEL_SIZE}px`,
                 height: `${BIRD_PIXEL_SIZE}px`,
                 left: 0,
-                // Position without rotation (rotation will be on the image)
-                transform: `translateX(${x}px) translateY(${y}px)`,
-                // Only transition transform, not opacity (opacity changes smoothly via RAF)
-                transition: `transform 150ms linear`,
+                // Use translate3d for better mobile performance (GPU acceleration)
+                // Remove transition to prevent conflict with RAF updates
+                transform: `translate3d(${x}px, ${y}px, 0)`,
                 // combine creation fade (isVisible) with edge fade
                 opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,
-                willChange: "transform, opacity",
+                // Optimize for mobile performance
+                willChange: "transform",
+                backfaceVisibility: "hidden",
+                perspective: 1000,
               }}
             >
             <Image
@@ -547,9 +562,11 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
                 // 1. Flip horizontally with scaleX(-1)
                 // 2. Compensate rotation: flipping mirrors the angle across the vertical axis
                 //    So if flying at angle θ to the right, flipped bird needs 180° - θ
+                // Use translate3d(0,0,0) to force GPU acceleration on mobile
                 transform: bird.direction === "left" 
-                  ? `scaleX(-1) rotate(${180 - rotationDeg}deg)` 
-                  : `rotate(${rotationDeg}deg)`,
+                  ? `scaleX(-1) rotate(${180 - rotationDeg}deg) translate3d(0,0,0)` 
+                  : `rotate(${rotationDeg}deg) translate3d(0,0,0)`,
+                backfaceVisibility: "hidden",
               }}
             />
             </div>
