@@ -152,25 +152,25 @@ export default function HomePage() {
 				<section className="py-20 px-4">
 					<div className="container mx-auto max-w-6xl relative z-20">
 						<div className="grid md:grid-cols-2 gap-12 items-center">
-						<div className="space-y-3">
-							<div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-								<Image
-									src="/images/about-us.jpeg"
-									alt="Club members during bird banding activity"
-									fill
-									className="object-cover"
-									quality={85}
-									sizes="(max-width: 768px) 100vw, 50vw"
-									loading="lazy"
-								/>
-							</div>
-							<p className="text-sm text-center text-muted-foreground italic">
+							<div className="md:order-1 order-2 space-y-3">
+								<div className="relative h-auto md:h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+									<Image
+										src="/images/about-us.jpeg"
+										alt="Club members during bird banding activity"
+										fill
+										className="object-contain md:object-cover !relative !h-auto md:!absolute md:!h-full"
+										quality={85}
+										sizes="(max-width: 768px) 100vw, 50vw"
+										loading="lazy"
+									/>
+								</div>
+								<p className="text-sm text-center text-muted-foreground italic">
 									Club members after capturing birds in a mist net for banding and
 									release
 								</p>
 							</div>
 
-							<div>
+							<div className="md:order-2 order-1">
 								<h2 className="font-display text-5xl md:text-6xl font-bold mb-6 text-primary">
 									ABOUT US
 								</h2>
@@ -220,7 +220,7 @@ export default function HomePage() {
 								</ul>
 
 								<p
-									className="mt-8 text-lg font-semibold"
+									className="mt-8 text-lg font-semibold md:mb-0"
 									style={{ color: "#36834C" }}
 								>
 									All experience levels welcome, from beginners to experienced
