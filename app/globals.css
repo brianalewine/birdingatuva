@@ -1,7 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+
+html, body {
+  background: var(--background);
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  box-sizing: border-box;
+}
 
 :root {
   /* Updated theme to match UVA colors and nature-inspired design */

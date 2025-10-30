@@ -37,8 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${bebasNeue.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
+      <body className={`${inter.variable} ${bebasNeue.variable} ${playfair.variable} font-sans antialiased bg-background`}>
+        <div className="min-h-screen flex flex-col">
+          {children}
+        </div>
       </body>
     </html>
   )

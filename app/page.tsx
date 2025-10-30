@@ -91,8 +91,8 @@ export default function HomePage() {
 		birdImages = []
 	}
 
-	return (
-		<div className="min-h-screen relative">
+		return (
+			<div className="min-h-screen relative bg-background" style={{background: 'var(--background)'}}>
 			<Navigation />
 
 			<main className="relative z-20">
