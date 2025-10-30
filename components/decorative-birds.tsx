@@ -64,15 +64,15 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
 
   // limit concurrent birds and keep spawn frequency independent of how many files exist
   // Reduce the base concurrent birds to lower on-screen density.
-  const MAX_CONCURRENT_BIRDS = 2 // base concurrent birds per viewport (further reduced)
+  const MAX_CONCURRENT_BIRDS = 1 // base concurrent birds per viewport (further reduced)
   // Increase spawn interval so new birds appear less frequently
-  const SPAWN_RATE_MS = 2000 // spawn every 1.2s
+  const SPAWN_RATE_MS = 3000 // spawn every 3s
   // Render all bird images at a fixed pixel size so they appear uniform
   // (increased by 20% per request)
   const BIRD_PIXEL_SIZE = 66
-  // Mobile birds are 35% smaller (25% + additional 10%)
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-  const MOBILE_BIRD_SIZE = Math.round(BIRD_PIXEL_SIZE * 0.65)
+  // Mobile birds are 25% smaller (was 35% smaller, now increased by 10%)
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768
+  const MOBILE_BIRD_SIZE = Math.round(BIRD_PIXEL_SIZE * 0.75)
   const effectiveBirdSize = isMobile ? MOBILE_BIRD_SIZE : BIRD_PIXEL_SIZE
 
   useEffect(() => {
