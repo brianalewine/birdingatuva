@@ -79,6 +79,12 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
           </div>
         )
       })}
+      <div
+        className="absolute inset-0 z-10 flex items-center justify-center text-white text-4xl font-bold drop-shadow-lg"
+        style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
+      >
+        {/* Club text content */}
+      </div>
     </div>
   )
 }
