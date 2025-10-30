@@ -50,6 +50,14 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   const rafRef = useRef<number | null>(null)
   const lastFrameRef = useRef<number | null>(null)
   const spawnIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  // Store bird DOM refs for direct manipulation (smoother than state updates)
+  const birdElementsRef = useRef<Map<number, HTMLDivElement>>(new Map())
+  // Store image element refs to update rotation
+  const birdImageElementsRef = useRef<Map<number, HTMLImageElement>>(new Map())
+  // Store bird data in a ref so we can update it without re-renders
+  const birdDataRef = useRef<Map<number, FlyingBird>>(new Map())
+  // Batch bird removals to reduce state updates
+  const pendingRemovalsRef = useRef<Set<number>>(new Set())
   
   // use provided images array; if none provided, show no birds
   const birdImageList = images && images.length > 0 ? images : BIRD_IMAGES
@@ -317,11 +325,21 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
     // add the bird using functional update to avoid stale closures and enforce max concurrent birds
     setFlyingBirds((prev) => {
       if (prev.length >= dynamicMax) return prev
-      return [...prev, newBird]
+      const updated = [...prev, newBird]
+      // Also update the ref with bird data
+      birdDataRef.current.set(newBird.id, newBird)
+      return updated
     })
 
     setTimeout(() => {
-      setFlyingBirds((prev) => prev.map((b) => (b.id === newBird.id ? { ...b, isVisible: true } : b)))
+      setFlyingBirds((prev) => prev.map((b) => {
+        if (b.id === newBird.id) {
+          const updated = { ...b, isVisible: true }
+          birdDataRef.current.set(b.id, updated)
+          return updated
+        }
+        return b
+      }))
     }, 16)
   }
 
@@ -356,76 +374,119 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   useEffect(() => {
     // Detect mobile once at setup time
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-    let frameCount = 0
+    let removeCheckCounter = 0
     
     const loop = (t: number) => {
       if (!lastFrameRef.current) lastFrameRef.current = t
       const delta = t - (lastFrameRef.current || t)
       lastFrameRef.current = t
 
-      // On mobile, only update every other frame to reduce jitter
-      // On desktop, always update every frame
-      frameCount++
-      const shouldUpdate = !isMobile || frameCount % 2 === 0
+      const w = typeof window !== "undefined" ? window.innerWidth : 1200
+      const h = typeof window !== "undefined" ? window.innerHeight : 800
+      
+      // Check for removal every 60 frames (~1 second) to minimize state updates
+      removeCheckCounter++
+      const shouldCheckRemoval = removeCheckCounter % 60 === 0
 
-      if (shouldUpdate) {
-        setFlyingBirds((prev) => {
-          if (prev.length === 0) return prev
-          const w = typeof window !== "undefined" ? window.innerWidth : 1200
-          const h = typeof window !== "undefined" ? window.innerHeight : 800
-          
-          const updated = prev.map((b) => {
-            const baseV = b.baseVelocity ?? (1 / (b.speed * 1000))
-            // effective velocity scales with birdSpeed; when we've slowed to MIN and not scrolling, pause fully
-            const effectiveV = !isScrolling && birdSpeed <= MIN_SPEED_FACTOR + 0.001 ? 0 : baseV * birdSpeed
-            // On mobile with frame skipping, double the delta to compensate
-            const actualDelta = isMobile ? delta * 2 : delta
-            const added = effectiveV * actualDelta
-            // Don't clamp progress - let birds continue moving beyond their path end point
-            const newProgress = (b.progress ?? 0) + added
-            return { ...b, progress: newProgress }
-          })
+      // Update bird positions directly in the DOM (no React state update)
+      birdDataRef.current.forEach((bird, id) => {
+        const baseV = bird.baseVelocity ?? (1 / (bird.speed * 1000))
+        const effectiveV = !isScrolling && birdSpeed <= MIN_SPEED_FACTOR + 0.001 ? 0 : baseV * birdSpeed
+        const added = effectiveV * delta
+        const newProgress = (bird.progress ?? 0) + added
+        
+        // Update bird data in ref
+        bird.progress = newProgress
 
-          // Remove birds only when they're definitely off-screen
-          // Compute a conservative on-screen position for each bird and only
-          // remove it once it's both past a progress threshold and off the viewport
-          return updated.filter((b) => {
-            const progress = b.progress ?? 0
-            // If the bird hasn't passed the basic endpoint, keep it
-            if (progress < 1.2) return true
+        // Update DOM element directly
+        const element = birdElementsRef.current.get(id)
+        if (element) {
+          const startX = bird.startX ?? -120
+          const startY = bird.startY ?? 200
+          const cpX = bird.cpX ?? (w / 2)
+          const cpY = bird.cpY ?? 300
+          const endX = bird.endX ?? (w + 120)
+          const endY = bird.endY ?? 200
+          const rawProgress = bird.progress ?? 0
 
-            // Approximate its current x position (same logic as render):
-            const startX = b.startX ?? -120
-            const startY = b.startY ?? 200
-            const cpX = b.cpX ?? (w / 2)
-            const cpY = b.cpY ?? 300
-            const endX = b.endX ?? (w + 120)
-            const endY = b.endY ?? 200
-            const rawProgress = progress
+          let x: number, y: number
+          if (rawProgress <= 1) {
+            const p = rawProgress
+            x = ((1 - p) * (1 - p) * startX) + (2 * (1 - p) * p * cpX) + (p * p * endX)
+            y = ((1 - p) * (1 - p) * startY) + (2 * (1 - p) * p * cpY) + (p * p * endY)
+          } else {
+            const tangentX = 2 * (endX - cpX)
+            const tangentY = 2 * (endY - cpY)
+            const tangentMagnitude = Math.sqrt(tangentX * tangentX + tangentY * tangentY)
+            const normalizedTangentX = tangentX / tangentMagnitude
+            const normalizedTangentY = tangentY / tangentMagnitude
+            const extraProgress = (rawProgress - 1) * 800
+            x = endX + normalizedTangentX * extraProgress
+            y = endY + normalizedTangentY * extraProgress
+          }
 
-            let xPos: number
-            if (rawProgress <= 1) {
-              const p = rawProgress
-              xPos = ((1 - p) * (1 - p) * startX) + (2 * (1 - p) * p * cpX) + (p * p * endX)
-            } else {
-              // continue along endpoint tangent
-              const tangentX = 2 * (endX - cpX)
-              const tangentY = 2 * (endY - cpY)
-              const mag = Math.sqrt(tangentX * tangentX + tangentY * tangentY) || 1
-              const nx = tangentX / mag
-              const extra = (rawProgress - 1) * 800
-              xPos = endX + nx * extra
+          // Use sub-pixel precision for smoother motion on desktop
+          // Round only on mobile to save performance
+          const finalX = isMobile ? Math.round(x) : x.toFixed(2)
+          const finalY = isMobile ? Math.round(y) : y.toFixed(2)
+
+          // Use a single composite transform update to avoid multiple reflows
+          const newTransform = `translate3d(${finalX}px, ${finalY}px, 0)`
+          element.style.transform = newTransform
+
+          // Update bird rotation based on flight direction
+          const imageElement = birdImageElementsRef.current.get(id)
+          if (imageElement) {
+            const p = Math.min(1, rawProgress)
+            const dx = 2 * (1 - p) * (cpX - startX) + 2 * p * (endX - cpX)
+            const dy = 2 * (1 - p) * (cpY - startY) + 2 * p * (endY - cpY)
+            const rotationDeg = Math.atan2(dy, dx) * (180 / Math.PI)
+            
+            // Update rotation on the image element
+            const rotationTransform = bird.direction === "left" 
+              ? `scaleX(-1) rotate(${180 - rotationDeg}deg) translate3d(0,0,0)` 
+              : `rotate(${rotationDeg}deg) translate3d(0,0,0)`
+            imageElement.style.transform = rotationTransform
+          }
+
+          // Update opacity with responsive fade distances
+          // Mobile gets shorter fade zones (proportional to screen width)
+          const FADE_DISTANCE_LEFT = isMobile ? 80 : 150
+          const FADE_DISTANCE_RIGHT = isMobile ? 100 : 200
+          const MIN_OPACITY = 0.1
+          const leftFade = x < 0 ? MIN_OPACITY : (x < FADE_DISTANCE_LEFT ? MIN_OPACITY + (x / FADE_DISTANCE_LEFT) * (1 - MIN_OPACITY) : 1)
+          const rightFade = x > w ? MIN_OPACITY : (x > w - FADE_DISTANCE_RIGHT ? MIN_OPACITY + ((w - x) / FADE_DISTANCE_RIGHT) * (1 - MIN_OPACITY) : 1)
+          const edgeOpacity = Math.min(leftFade, rightFade)
+          const newOpacity = ((bird.isVisible ? 1 : 0) * edgeOpacity).toFixed(3)
+          element.style.opacity = newOpacity
+
+          // Check if bird should be removed (only every 60 frames)
+          if (shouldCheckRemoval && newProgress >= 1.5) {
+            const OFFSCREEN_MARGIN = 200
+            if (x < -120 - OFFSCREEN_MARGIN || x > w + 120 + OFFSCREEN_MARGIN) {
+              // Add to pending removals instead of removing immediately
+              pendingRemovalsRef.current.add(id)
+              // Hide it immediately
+              element.style.opacity = '0'
             }
+          }
+        }
+      })
 
-            // Remove only once bird is well off-screen horizontally
-            const OFFSCREEN_MARGIN = 160
-            if (xPos < -120 - OFFSCREEN_MARGIN) return false
-            if (xPos > w + 120 + OFFSCREEN_MARGIN) return false
-
-            // If still within that range, keep it so it can fade/move out
-            return true
-          })
+      // Process batched removals every 60 frames
+      if (shouldCheckRemoval && pendingRemovalsRef.current.size > 0) {
+        const toRemove = Array.from(pendingRemovalsRef.current)
+        pendingRemovalsRef.current.clear()
+        
+        // Clean up refs
+        toRemove.forEach(id => {
+          birdDataRef.current.delete(id)
+          birdElementsRef.current.delete(id)
+          birdImageElementsRef.current.delete(id)
         })
+        
+        // Single batched state update for all removals
+        setFlyingBirds(prev => prev.filter(b => !toRemove.includes(b.id)))
       }
 
       rafRef.current = requestAnimationFrame(loop)
@@ -519,43 +580,42 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           // Use the minimum fade (most restrictive)
           const edgeOpacity = Math.min(leftFade, rightFade)
 
-          // Compute derivative of Bezier for instantaneous direction (for rotation)
-          // Use p=1 for rotation if we're past the curve
-          const p = Math.min(1, rawProgress)
-
-          // derivative B'(t) = 2(1-t)(P1-P0) + 2t(P2-P1)
-          const dx = 2 * (1 - p) * (cpX - startX) + 2 * p * (endX - cpX)
-          const dy = 2 * (1 - p) * (cpY - startY) + 2 * p * (endY - cpY)
-
-          // Calculate rotation from the tangent direction
-          // All bird images face right (0°), so we rotate them to match their flight path
-          const rotationDeg = Math.atan2(dy, dx) * (180 / Math.PI)
-
-          // Round positions to whole pixels to prevent sub-pixel jitter
-          const roundedX = Math.round(x)
-          const roundedY = Math.round(y)
-
           return (
             <div
               key={bird.id}
+              ref={(el) => {
+                if (el) {
+                  birdElementsRef.current.set(bird.id, el)
+                } else {
+                  birdElementsRef.current.delete(bird.id)
+                }
+              }}
               className="absolute"
               style={{
                 top: `${bird.top}px`,
                 width: `${effectiveBirdSize}px`,
                 height: `${effectiveBirdSize}px`,
                 left: 0,
-                // Use translate3d for better mobile performance (GPU acceleration)
-                // Round to whole pixels to prevent sub-pixel rendering jitter
-                transform: `translate3d(${roundedX}px, ${roundedY}px, 0)`,
-                // combine creation fade (isVisible) with edge fade
-                opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,
-                // Optimize for mobile performance
-                willChange: "transform",
+                // Initial position - will be updated by RAF loop
+                transform: `translate3d(0px, 0px, 0)`,
+                opacity: 0,
+                // Force GPU acceleration and smooth rendering
+                willChange: "transform, opacity",
                 backfaceVisibility: "hidden",
-                perspective: 1000,
+                WebkitBackfaceVisibility: "hidden",
+                transformStyle: "preserve-3d",
               }}
             >
             <Image
+              ref={(el) => {
+                if (el) {
+                  // Next.js Image returns an img element
+                  const imgElement = el as unknown as HTMLImageElement
+                  birdImageElementsRef.current.set(bird.id, imgElement)
+                } else {
+                  birdImageElementsRef.current.delete(bird.id)
+                }
+              }}
               src={`/images/flying-birds/${bird.bird}`}
               alt=""
               width={effectiveBirdSize}
@@ -566,14 +626,8 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
               loading="lazy"
               style={{
                 filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))",
-                // All birds face right. For left-facing flight:
-                // 1. Flip horizontally with scaleX(-1)
-                // 2. Compensate rotation: flipping mirrors the angle across the vertical axis
-                //    So if flying at angle θ to the right, flipped bird needs 180° - θ
-                // Use translate3d(0,0,0) to force GPU acceleration on mobile
-                transform: bird.direction === "left" 
-                  ? `scaleX(-1) rotate(${180 - rotationDeg}deg) translate3d(0,0,0)` 
-                  : `rotate(${rotationDeg}deg) translate3d(0,0,0)`,
+                // Initial rotation - will be updated by RAF loop
+                transform: `rotate(0deg) translate3d(0,0,0)`,
                 backfaceVisibility: "hidden",
               }}
             />
