@@ -499,7 +499,7 @@ export default function HomePage() {
 										<div className="flex items-start gap-3">
 											<MapPin className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
 											<p className="text-foreground">
-												Local trips in the Charlottesville area
+												Weekly local trips in the Charlottesville area
 											</p>
 										</div>
 										<div className="flex items-start gap-3">

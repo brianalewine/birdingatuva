@@ -24,7 +24,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Birding at UVA",
-  description: "University of Virginia Birding Club - Join us for birding trips, education, and community",
+  description: "Birding Club at the University of Virginia  - Join us for birding trips, education, and community",
   icons: {
     icon: "/images/club-logo.png",
   },
