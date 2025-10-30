@@ -36,7 +36,7 @@ export function Navigation() {
               <span className="font-sans text-lg sm:text-xl md:text-2xl font-semibold tracking-wide">
                 Birding at UVA
               </span>
-              <span className="font-sans text-xs md:text-sm font-light italic -mt-1">
+              <span className="font-sans text-xs md:text-sm font-light italic -mt-0.5">
                 Hoo's Watching Hoo?
               </span>
             </div>
