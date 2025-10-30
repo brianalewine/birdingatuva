@@ -62,6 +62,10 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
   // Render all bird images at a fixed pixel size so they appear uniform
   // (increased by 20% per request)
   const BIRD_PIXEL_SIZE = 66
+  // Mobile birds are 25% smaller
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const MOBILE_BIRD_SIZE = Math.round(BIRD_PIXEL_SIZE * 0.75)
+  const effectiveBirdSize = isMobile ? MOBILE_BIRD_SIZE : BIRD_PIXEL_SIZE
 
   useEffect(() => {
     setMounted(true)
@@ -527,18 +531,22 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
           // All bird images face right (0°), so we rotate them to match their flight path
           const rotationDeg = Math.atan2(dy, dx) * (180 / Math.PI)
 
+          // Round positions to whole pixels to prevent sub-pixel jitter
+          const roundedX = Math.round(x)
+          const roundedY = Math.round(y)
+
           return (
             <div
               key={bird.id}
               className="absolute"
               style={{
                 top: `${bird.top}px`,
-                width: `${BIRD_PIXEL_SIZE}px`,
-                height: `${BIRD_PIXEL_SIZE}px`,
+                width: `${effectiveBirdSize}px`,
+                height: `${effectiveBirdSize}px`,
                 left: 0,
                 // Use translate3d for better mobile performance (GPU acceleration)
-                // Remove transition to prevent conflict with RAF updates
-                transform: `translate3d(${x}px, ${y}px, 0)`,
+                // Round to whole pixels to prevent sub-pixel rendering jitter
+                transform: `translate3d(${roundedX}px, ${roundedY}px, 0)`,
                 // combine creation fade (isVisible) with edge fade
                 opacity: (bird.isVisible ? 1 : 0) * edgeOpacity,
                 // Optimize for mobile performance
@@ -550,11 +558,11 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
             <Image
               src={`/images/flying-birds/${bird.bird}`}
               alt=""
-              width={BIRD_PIXEL_SIZE}
-              height={BIRD_PIXEL_SIZE}
+              width={effectiveBirdSize}
+              height={effectiveBirdSize}
               className="object-contain"
               quality={80}
-              sizes={`${BIRD_PIXEL_SIZE}px`}
+              sizes={`${effectiveBirdSize}px`}
               loading="lazy"
               style={{
                 filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))",
