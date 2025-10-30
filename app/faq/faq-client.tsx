@@ -105,6 +105,11 @@ const faqCategories = [
         answer:
           "Yes! We contribute to projects like eBird, the Great Backyard Bird Count, and Christmas Bird Counts. These efforts help scientists track bird populations and migration patterns.",
       },
+      {
+        question: "How do I share my eBird observations with the club account?",
+        answer:
+          "After you've finished birding and submitted your checklist, click \"Add Observers\" on your checklist. When given the option to share, add \"Birding@UVA\" as a collaborator. After your checklist has been accepted, you will see it on the club eBird profile!",
+      },
     ],
   },
 ]
