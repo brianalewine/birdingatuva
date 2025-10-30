@@ -425,10 +425,10 @@ export function DecorativeBirds({ images }: DecorativeBirdsProps) {
             y = endY + normalizedTangentY * extraProgress
           }
 
-          // Use sub-pixel precision for smoother motion on desktop
-          // Round only on mobile to save performance
-          const finalX = isMobile ? Math.round(x) : x.toFixed(2)
-          const finalY = isMobile ? Math.round(y) : y.toFixed(2)
+          // Use sub-pixel precision for smoother motion on both desktop and mobile
+          // Mobile uses 1 decimal place, desktop uses 2 for ultra-smooth motion
+          const finalX = isMobile ? x.toFixed(1) : x.toFixed(2)
+          const finalY = isMobile ? y.toFixed(1) : y.toFixed(2)
 
           // Use a single composite transform update to avoid multiple reflows
           const newTransform = `translate3d(${finalX}px, ${finalY}px, 0)`
