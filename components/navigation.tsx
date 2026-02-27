@@ -110,13 +110,13 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Name */}
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity md:-ml-12">
-            <div className="relative w-[50px] h-[50px] rounded-full overflow-hidden">
+            <div className="relative w-[90px] h-[50px] overflow-hidden flex items-center">
               <CloudinaryImage
-                src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dev-birdingatuva'}/image/upload/home-page/logo-transparent`}
-                alt="Birding at UVA Logo"
-                width={50}
+                src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dev-birdingatuva'}/image/upload/home-page/banner-transparent`}
+                alt="Birding at UVA Banner"
+                width={90}
                 height={50}
-                className="object-cover"
+                className="object-contain"
               />
             </div>
             <div className="flex flex-col">

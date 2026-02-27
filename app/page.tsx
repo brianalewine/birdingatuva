@@ -100,22 +100,13 @@ export default function HomePage() {
 
 			<main className="relative z-20">
 				<DecorativeBirds images={birdImages} />
-				<section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+				<section className="relative min-h-[65vh] flex items-center justify-center overflow-hidden">
 					<HeroSlideshow images={heroImages} />
 
 					<div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75" />
 
 					<div className="relative z-20 text-center px-4 max-w-5xl mx-auto animate-fade-in-up">
-						<div className="mb-8 flex justify-center">
-							<div className="relative w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl">
-								<CloudinaryImage
-									src={`https://res.cloudinary.com/${cloudinaryCloudName}/image/upload/home-page/logo-transparent`}
-									alt="Birding at UVA Logo"
-									fill
-									className="object-contain filter drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
-								/>
-							</div>
-						</div>
+						{/* Logo removed from hero area */}
 
 						<h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-6 tracking-tight [text-shadow:_0_4px_20px_rgb(0_0_0_/_90%),_0_2px_8px_rgb(0_0_0_/_80%)]">
 							BIRDING AT UVA
