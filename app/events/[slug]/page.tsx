@@ -1,5 +1,4 @@
-export const dynamic = 'force-static'
-export const revalidate = false
+export const dynamic = 'force-dynamic'
 export const dynamicParams = true // Allow dynamic slug paths not in generateStaticParams
 import { notFound } from "next/navigation"
 import EventTemplate from "../EventTemplate"
